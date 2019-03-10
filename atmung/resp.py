@@ -5,16 +5,24 @@ from mne.io import read_raw_brainvision
 from glob import glob
 from os import path
 import shutil
+import re
 
 
-def fix_ch_bug(ifname, ofname, ch_correct="GSR_MR_50_xx", ch_wrong="GSR_MR_50_xx15"):
+def fix_ch_bug(ifname, ofname, max_ch_len=11):
     """
     Read file at `ifname`, replace `ch_correct` to `ch_wrong` and write that to `ofname`
     """
     with open(ifname) as io:
         v = io.read()
+    m = re.search(r'Ch1=(.+?),', v)
+    if m:
+        ch1 = m.group(1)
+        if len(ch1) > max_ch_len:
+            new_ch1 = ch1[:max_ch_len]
+        v = v.replace(ch1 + ",", new_ch1 + ",")
+        v = v.replace(ch1, new_ch1 + " ")
     with open(ofname, "w") as io:
-        io.write(v.replace(ch_wrong, ch_correct))
+        io.write(v)
 
 
 def load_vhdr(fname):
