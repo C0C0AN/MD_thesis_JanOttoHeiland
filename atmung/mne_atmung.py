@@ -50,6 +50,7 @@ if __name__ == '__main__':
         file = sys.argv[1]
     print("Loading", file)
     data, times, raw = load_vhdr(file)
+    # TODO: 20218200 = ??
     datavector=np.reshape(data, 20218200)
     default = (max(datavector)-min(datavector))/30
 
