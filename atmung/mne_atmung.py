@@ -30,7 +30,7 @@ def plot_test_range(a=3000, b=3300):
 
     plt.xlabel(u"Intervalllänge")
     plt.hist(np.diff(tpeak_times), bins=np.linspace(0, 7.5, num=100), 
-              label="Verteilung der Atmungsintervalllaengen", density=True)
+             label="Verteilung der Atmungsintervalllaengen", density=True)
 
 
 if __name__ == '__main__':
@@ -46,10 +46,11 @@ if __name__ == '__main__':
     file = '/home/jan/Documents/Doktorarbeit/Daten/BekJan/HOAF_EDA_Resp0002.vhdr'
     if len(sys.argv) >= 2:
         file = sys.argv[1]
+        
     print("Loading", file)
     data, times, raw = load_vhdr(file)
     # TODO: 20218200 = ??
-    datavector=np.reshape(data, 20218200)
+    datavector = data.reshape(-1)
     default = (max(datavector)-min(datavector))/30
 
     #Einspeisen des Datenvektors in peakfinder 
