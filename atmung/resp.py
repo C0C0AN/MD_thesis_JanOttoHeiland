@@ -37,7 +37,7 @@ def load_vhdr(fname):
 
 def find_vhdrs(directory):
     """Return a list of all files *.vhdr in `directory`"""
-    return glob(path.join(directory, '*.vhdr'))
+    return sorted(glob(path.join(directory, '*.vhdr')))
 
 
 if __name__ == '__main__':
