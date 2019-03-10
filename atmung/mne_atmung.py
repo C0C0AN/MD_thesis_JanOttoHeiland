@@ -1,4 +1,7 @@
 # coding: utf-8
+"""
+Werte Atmungskurve aus.
+"""
 from __future__ import print_function
 from matplotlib import pyplot as plt
 from mne.preprocessing.peak_finder import peak_finder
@@ -42,13 +45,17 @@ def process(fname):
 
 
 if __name__ == '__main__':
-    import sys
+    import argparse
+    from os import path
 
-    fname = '/home/jan/Documents/Doktorarbeit/Daten/BekJan/HOAF_EDA_Resp0002.vhdr'
-    if len(sys.argv) >= 2:
-        fname = sys.argv[1]
+    data_dir = path.join(path.dirname(__file__), '..', '..', 'Daten')
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument('file', help='VHDR Datei, die ausgewertet werden soll',
+                   type=str, nargs='?',
+                   default=path.join(data_dir, 'BekJan', 'HOAF_EDA_Resp0002.vhdr'))
+    args = p.parse_args()
 
-    process(fname)
+    process(args.file)
     # plot_test_range()
     plt.show()
 
