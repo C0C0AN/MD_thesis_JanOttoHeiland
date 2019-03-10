@@ -2,8 +2,7 @@
 Provide access to VHDR/EEG data.
 """
 from mne.io import read_raw_brainvision
-from shutil import copyfile
-import os
+import shutil
 
 
 def fix_ch_bug(ifname, ofname, ch_correct="GSR_MR_50_xx", ch_wrong="GSR_MR_50_xx15"):
@@ -20,7 +19,14 @@ def load_vhdr(fname):
     """
     Return arrays data, times, and raw.
     """
-    raw = read_raw_brainvision(fname, preload=True)
+    try:
+        backup_fname = fname + ".backup"
+        shutil.copyfile(fname, backup_fname)
+        fix_ch_bug(fname, fname)
+        raw = read_raw_brainvision(fname, preload=True)
+    finally:
+        shutil.move(backup_fname, fname)
+
     data = raw.get_data()
     raw.pick_channels(['Resp'])
     data, times = raw[:]
