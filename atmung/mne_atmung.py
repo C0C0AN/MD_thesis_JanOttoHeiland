@@ -1,16 +1,9 @@
 # coding: utf-8
 from __future__ import print_function
-import mne
-import os.path as op
-import numpy as np
 from matplotlib import pyplot as plt
-from mne.io import read_raw_brainvision
-
-from numpy.testing import assert_array_equal
-import os
-import numpy as np
 from mne.preprocessing.peak_finder import peak_finder
 from resp import load_vhdr
+import numpy as np
 
 
 def plot_test_range(a=3000, b=3300):
@@ -33,15 +26,14 @@ def plot_test_range(a=3000, b=3300):
              label="Verteilung der Atmungsintervalllaengen", density=True)
 
 
+def plot_resp(times, peak_times, resp):
+    """Plot peaks in respiration curve"""
+    plt.vlines(x=peak_times, ymin=-1, ymax=1)
+    plt.plot(times, resp)
+
+
 if __name__ == '__main__':
     import sys
-
-    plot_resp = False
-
-    if plot_resp:
-        plt.vlines(x=peak_times, ymin=-1, ymax=1)
-        plt.plot(times, resp)
-
 
     file = '/home/jan/Documents/Doktorarbeit/Daten/BekJan/HOAF_EDA_Resp0002.vhdr'
     if len(sys.argv) >= 2:
@@ -53,7 +45,7 @@ if __name__ == '__main__':
     datavector = data.reshape(-1)
     default = (max(datavector)-min(datavector))/30
 
-    #Einspeisen des Datenvektors in peakfinder 
+    # Einspeisen des Datenvektors in peakfinder 
     peak_loc, peak_mag = peak_finder(datavector,thresh=default, extrema=-1)
     peak_times = times[peak_loc]
     resp = raw.get_data()[0]
