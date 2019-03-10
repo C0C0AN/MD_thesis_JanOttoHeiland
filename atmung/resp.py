@@ -2,6 +2,8 @@
 Provide access to VHDR/EEG data.
 """
 from mne.io import read_raw_brainvision
+from glob import glob
+from os import path
 import shutil
 
 
@@ -33,8 +35,17 @@ def load_vhdr(fname):
     return data, times, raw
 
 
+def find_vhdrs(directory):
+    """Return a list of all files *.vhdr in `directory`"""
+    return glob(path.join(directory, '*.vhdr'))
+
+
 if __name__ == '__main__':
     import sys
 
-    assert len(sys.argv) >= 3
-    fix_ch_bug(sys.argv[1], sys.argv[2])
+    if len(sys.argv) == 2:
+        for f in find_vhdrs(sys.argv[1]):
+            print(f)
+    else:
+        assert len(sys.argv) >= 3
+        fix_ch_bug(sys.argv[1], sys.argv[2])
