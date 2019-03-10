@@ -35,12 +35,12 @@ def plot_resp(times, peak_times, resp):
 if __name__ == '__main__':
     import sys
 
-    file = '/home/jan/Documents/Doktorarbeit/Daten/BekJan/HOAF_EDA_Resp0002.vhdr'
+    fname = '/home/jan/Documents/Doktorarbeit/Daten/BekJan/HOAF_EDA_Resp0002.vhdr'
     if len(sys.argv) >= 2:
-        file = sys.argv[1]
+        fname = sys.argv[1]
         
-    print("Loading", file)
-    data, times, raw = load_vhdr(file)
+    print("Loading", fname)
+    data, times, raw = load_vhdr(fname)
     # TODO: 20218200 = ??
     datavector = data.reshape(-1)
     default = (max(datavector)-min(datavector))/30
