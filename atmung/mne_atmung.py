@@ -10,19 +10,12 @@ from numpy.testing import assert_array_equal
 import os
 import numpy as np
 from mne.preprocessing.peak_finder import peak_finder
+from resp import load_vhdr
+
 
 plot_resp = False
 
 
-def load_vhdr(file='/home/jan/Documents/Doktorarbeit/Daten/BekJan/HOAF_EDA_Resp0002.vhdr'):
-
-    raw = mne.io.read_raw_brainvision(file, preload=True)
-    data = raw.get_data()
-    # fig = raw.plot(None, 10.0,0.0,3,'w',None,(0.8,0.8,0.8),'cyan','auto')
-    raw.pick_channels(['Resp'])
-    data, times = raw[:]
-    # TODO: 20218200 = ??
-    return data, times, raw
 
 if plot_resp:
     plt.vlines(x=peak_times, ymin=-1, ymax=1)
