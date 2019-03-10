@@ -25,7 +25,7 @@ def load_vhdr(fname):
         backup_fname = fname + ".backup"
         shutil.copyfile(fname, backup_fname)
         fix_ch_bug(fname, fname)
-        raw = read_raw_brainvision(fname, preload=True)
+        raw = read_raw_brainvision(fname, preload=True, stim_channel=False)
     finally:
         shutil.move(backup_fname, fname)
 
