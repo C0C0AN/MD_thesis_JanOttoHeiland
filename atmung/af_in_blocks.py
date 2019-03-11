@@ -12,6 +12,7 @@ def number_peaks(peak_times, start, stop):
 
 
 fname = "../../Daten/BekJan/HOAF_16.vhdr"
+dauer = 120
 data, times, raw = load_vhdr(fname)
 datavector = data.reshape(-1)
 threshold = (max(datavector)-min(datavector)) / 30
@@ -22,14 +23,14 @@ peak_times = times[peak_loc]
 
 endzeit = times[-1]
 start = 0
-stop = 60
+stop = dauer
 l = []
 t = []
 while stop <= endzeit:
     t.append(0.5*(start + stop))
     l.append(number_peaks(peak_times, start, stop))
-    start = start + 60
-    stop = stop + 60
+    start = start + dauer
+    stop = stop + dauer
 
 plt.plot(t, l)
 plt.xlabel('Zeit(s)')
