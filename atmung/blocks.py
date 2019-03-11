@@ -1,4 +1,3 @@
-
 """
 Find the Response blocks
 """
@@ -17,13 +16,10 @@ def plot_block_hist(ann):
     response_times = ann.onset[mask]
     plt.hist(response_times, cumulative=True, bins=200)
     
-'''
-hier werden die Start und Endzeitpunkte der drei Blocks gefunden
-'''
 def find_blocks(ann, delta=1.5):
-    """
-    TODO
-    """
+    '''
+    hier werden die Start und Endzeitpunkte der drei Blocks gefunden
+    '''
     mask = ann.description == RESPONSE
     s0 = np.argmax(mask)
     t2 = len(ann) - np.argmax(np.flipud(mask)) - 1
@@ -46,9 +42,10 @@ def get_blocktimes(fname):
     ann = raw.annotations
 
     blocks = np.array(find_blocks(ann))
-#    print(blocks)
-#    print(blocks.ravel())
-#    print(ann.onset[blocks.ravel()])
+    if False:
+        print(blocks)
+        print(blocks.ravel())
+        print(ann.onset[blocks.ravel()])
     
     return blocks.ravel().tolist()
 
@@ -59,6 +56,7 @@ def get_blocktimes(fname):
     if False:
         plot_block_hist(ann)
         plt.show()
+
 
 '''
 Hauptmethode die mir eine Liste von allen Blockzeiten von allen Probanden erstellt
