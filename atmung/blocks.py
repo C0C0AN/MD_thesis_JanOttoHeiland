@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Find the Response blocks
 """
@@ -7,6 +8,7 @@ import numpy as np
 from resp import find_vhdrs
 import pandas as pd
 from os import path
+import warnings
 
 
 RESPONSE = 'Response/R128'
@@ -36,20 +38,28 @@ def find_blocks(ann, delta=1.5):
     return times
 
 
-def get_blocktimes(fname, delta=1.5, show_raw=False):
+def get_blocktimes(fname, delta=1.5, show_raw=False, filter=False):
     '''
-    Methode um eine Liste der End und Startpunkte der Bloecke zu generieren
+    Methode um eine Liste der End und Startpunkte der Bloecke zu generieren.
+
+    filter: Sollen die gefundenen Blöcke gefiltert werden auf mehr als 3?
     '''
     data, times, raw = load_vhdr(fname, verbose=False)
     ann = raw.annotations
-
     blocks = find_blocks(ann, delta=delta)
-    blocks = ann.onset[blocks]
+    blocks = list(ann.onset[blocks])
+    if filter:
+        if len(blocks) < 6:
+            return None
+        elif len(blocks) > 6:
+            # Finde den Block, mit der kürzesten Länge, d.h. kürzesten Differenz
+            min_block_idx = np.argmin(np.diff(blocks)[::2])
+            del blocks[2*min_block_idx]
+            del blocks[2*min_block_idx]
+        if len(blocks) != 6:
+            warnings.warn("length != 6 in " + fname)
+
     print(",".join([path.basename(fname)] + map(str, blocks)))
-    if False:
-        print(blocks)
-        print(blocks.ravel())
-        print(ann.onset[blocks.ravel()])
 
     if show_raw:
         raw.plot()
@@ -69,10 +79,7 @@ if __name__ == '__main__':
     process_all = True
 
     if process_all:
-        l = []
         for fname in find_vhdrs('../../Daten/BekJan/'):
-            b = get_blocktimes(fname)
-            l.append(b)
+            b = get_blocktimes(fname, filter=True)
     else:
-        
-        get_blocktimes("../../Daten/BekJan/HOAF_16.vhdr", show_raw=True)
+        get_blocktimes("../../Daten/BekJan/HOAF_13.vhdr", show_raw=False, filter=True)
