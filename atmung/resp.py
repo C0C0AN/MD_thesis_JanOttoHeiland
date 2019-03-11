@@ -19,8 +19,8 @@ def fix_ch_bug(ifname, ofname, max_ch_len=11):
         ch1 = m.group(1)
         if len(ch1) > max_ch_len:
             new_ch1 = ch1[:max_ch_len]
-        v = v.replace(ch1 + ",", new_ch1 + ",")
-        v = v.replace(ch1, new_ch1 + " ")
+            v = v.replace(ch1 + ",", new_ch1 + ",")
+            v = v.replace(ch1, new_ch1 + " ")
     with open(ofname, "w") as io:
         io.write(v)
 
