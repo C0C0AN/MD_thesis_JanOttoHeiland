@@ -66,7 +66,7 @@ def get_blocktimes(fname, delta=1.5, show_raw=False):
 Hauptmethode die mir eine Liste von allen Blockzeiten von allen Probanden erstellt
 '''
 if __name__ == '__main__':
-    process_all = False
+    process_all = True
 
     if process_all:
         l = []
@@ -74,5 +74,5 @@ if __name__ == '__main__':
             b = get_blocktimes(fname)
             l.append(b)
     else:
-        get_blocktimes("../../Daten/BekJan/HOAF_13.vhdr", show_raw=True)
-        get_blocktimes("../../Daten/BekJan/HOAF_05.vhdr")
+        
+        get_blocktimes("../../Daten/BekJan/HOAF_16.vhdr", show_raw=True)
