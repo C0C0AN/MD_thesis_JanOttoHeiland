@@ -72,27 +72,3 @@ if __name__ == '__main__':
     process(args.file, plot=args.plot, histogram=args.histogram)
     # plot_test_range()
     plt.show()
-
-
-def _peak_detection():
-    start = 1098
-    stop = 1822
-
-    def number_peak(start =start, stop=stop):
-        return len(peak_times[(peak_times>=start )& (peak_times<=stop)])
-
-    pt_1 = peak_times[(peak_times>=start )& (peak_times<=stop)]
-
-    len(pt_1)
-
-
-def _tests():
-    times[20120541]
-    # In[30]:
-    # min(datavector)
-    # # In[31]:
-    # max(datavector)
-    # # In[32]:
-    # number_peak()
-    # # In[49]:
-
