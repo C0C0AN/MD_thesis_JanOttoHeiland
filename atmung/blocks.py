@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from resp import find_vhdrs
 import pandas as pd
+from os import path
 
 
 RESPONSE = 'Response/R128'
@@ -35,28 +36,30 @@ def find_blocks(ann, delta=1.5):
     return times
 
 
-def get_blocktimes(fname, delta=1.5):
+def get_blocktimes(fname, delta=1.5, show_raw=False):
     '''
-    Methode um eine Liste der End und Startpunkte der Blöcke zu generieren
+    Methode um eine Liste der End und Startpunkte der Bloecke zu generieren
     '''
-    data, times, raw = load_vhdr(fname)
+    data, times, raw = load_vhdr(fname, verbose=False)
     ann = raw.annotations
 
-    blocks = np.array(find_blocks(ann, delta=delta))
+    blocks = find_blocks(ann, delta=delta)
+    blocks = ann.onset[blocks]
+    print(",".join([path.basename(fname)] + map(str, blocks)))
     if False:
         print(blocks)
         print(blocks.ravel())
         print(ann.onset[blocks.ravel()])
 
-    return blocks.ravel().tolist()
-
-    if False:
+    if show_raw:
         raw.plot()
         plt.show()
 
     if False:
         plot_block_hist(ann)
         plt.show()
+
+    return blocks
 
 
 '''
@@ -71,6 +74,5 @@ if __name__ == '__main__':
             b = get_blocktimes(fname)
             l.append(b)
     else:
-        print(get_blocktimes("../../Daten/BekJan/HOAF_13.vhdr"))
-        print(get_blocktimes("../../Daten/BekJan/HOAF_13.vhdr", delta=10))
-        print(get_blocktimes("../../Daten/BekJan/HOAF_05.vhdr"))
+        get_blocktimes("../../Daten/BekJan/HOAF_13.vhdr", show_raw=True)
+        get_blocktimes("../../Daten/BekJan/HOAF_05.vhdr")
