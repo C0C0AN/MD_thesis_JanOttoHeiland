@@ -72,6 +72,13 @@ def get_blocktimes(fname, delta=1.5, show_raw=False, filter=False):
     return blocks
 
 
+def load_blocks(csv_file='blocks.csv'):
+    """
+    Lade Informationen über Blocklängen in DataFrame
+    """
+    return pd.read_csv(csv_file, index_col=0, header=None)
+
+
 '''
 Hauptmethode die mir eine Liste von allen Blockzeiten von allen Probanden erstellt
 '''
