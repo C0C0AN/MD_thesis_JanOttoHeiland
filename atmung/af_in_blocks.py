@@ -47,16 +47,24 @@ def plot_af(l, t, dauer=60):
 def plot_blocks(fname):
     df = load_blocks()
     s0, t0, s1, t1, s2, t2 = df.loc[path.basename(fname)]
-    plt.gca().axvspan(s0, t0, facecolor='0.8', alpha = 0.2, color='red')
-    plt.gca().axvspan(s1, t1, facecolor='0.8', alpha = 0.2, color='blue')
-    plt.gca().axvspan(s2, t2, facecolor='0.8', alpha = 0.2, color='red')
+    plt.gca().axvspan(s0, t0, alpha = 0.2, color='red')
+    plt.gca().axvspan(s1, t1, alpha = 0.2, color='blue')
+    plt.gca().axvspan(s2, t2, alpha = 0.2, color='red')
     plt.legend()
 
 
 if __name__ == '__main__':
-    fname = "../../Daten/BekJan/HOAF_16.vhdr"
-    dauer = 120
-    l, t = af_blocks(fname, dauer=dauer)
-    plot_af(l, t, dauer=dauer)
-    plot_blocks(fname)
+    import argparse
+
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument('file', nargs='*', default=["../../Daten/BekJan/HOAF_16.vhdr"],
+                   help='Dateinamen, die angezeigt werden sollen')
+    p.add_argument('-d', '--dauer', type=float,
+                   help='Frequenzdauer')
+    args = p.parse_args()
+    for fname in args.file:
+        l, t = af_blocks(fname, dauer=args.dauer)
+        plt.figure(path.basename(fname))
+        plot_af(l, t, dauer=args.dauer)
+        plot_blocks(fname)
     plt.show()
