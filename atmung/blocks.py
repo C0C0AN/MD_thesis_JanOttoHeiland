@@ -1,9 +1,12 @@
+
 """
 Find the Response blocks
 """
 from resp import load_vhdr
 import matplotlib.pyplot as plt
 import numpy as np
+from resp import find_vhdrs
+import pandas as pd
 
 
 RESPONSE = 'Response/R128'
@@ -13,8 +16,10 @@ def plot_block_hist(ann):
     mask = ann.description == RESPONSE
     response_times = ann.onset[mask]
     plt.hist(response_times, cumulative=True, bins=200)
-
-
+    
+'''
+hier werden die Start und Endzeitpunkte der drei Blocks gefunden
+'''
 def find_blocks(ann, delta=1.5):
     """
     TODO
@@ -32,20 +37,40 @@ def find_blocks(ann, delta=1.5):
     return [[s0, t0], [s1, t1], [s2, t2]]
 
 
-if __name__ == '__main__':
-    fname = "../../Daten/BekJan/HOAF_05.vhdr"
+
+def get_blocktimes(fname):
+    '''
+    Methode um eine Liste der End und Startpunkte der Blöcke zu generieren 
+    '''    
     data, times, raw = load_vhdr(fname)
     ann = raw.annotations
 
     blocks = np.array(find_blocks(ann))
-    print(blocks)
-    print(blocks.ravel())
-    print(ann.onset[blocks.ravel()])
+#    print(blocks)
+#    print(blocks.ravel())
+#    print(ann.onset[blocks.ravel()])
+    
+    return blocks.ravel().tolist()
 
-    raw.plot()
-    plt.show()
+    if False:
+        raw.plot()
+        plt.show()
     
     if False:
         plot_block_hist(ann)
         plt.show()
+
+'''
+Hauptmethode die mir eine Liste von allen Blockzeiten von allen Probanden erstellt
+'''
+if __name__ == '__main__':
+    l = []
+    for fname in find_vhdrs('../../Daten/BekJan/'):
+        b = get_blocktimes(fname)
+        l.append(b)
+
+    
+   # fname = "../../Daten/BekJan/HOAF_05.vhdr"
+    #get_blocktimes(fname)
+
     
