@@ -13,7 +13,7 @@ def number_peaks(peak_times, start, stop):
     return len(peak_times[(peak_times >= start) & (peak_times < stop)])
 
 
-def af_blocks(fname, dauer=60, schritt=5):
+def af_blocks(fname, dauer=60, schritt=5, start=0, endzeit=None):
     '''
     return af /min Zeit(xAchse)
     '''
@@ -24,8 +24,8 @@ def af_blocks(fname, dauer=60, schritt=5):
     peak_loc, peak_mag = peak_finder(datavector,thresh=threshold, extrema=-1)
     peak_times = times[peak_loc]
 
-    endzeit = times[-1]
-    start = 0
+    if endzeit is None:
+        endzeit = times[-1]
     stop = dauer
     freq = []
     point = []
