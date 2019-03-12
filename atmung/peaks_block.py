@@ -11,6 +11,18 @@ import mne
 from af_in_blocks import af_blocks
 from os import path
 import matplotlib.pyplot as plt
+import glob
+
+df = load_blocks()
+fname = "../../Daten/BekJan/HOAF_03.vhdr"   
+s0, t0, s1, t1, s2, t2 = df.loc[path.basename(fname)]
+freq, point = af_blocks(fname, start=s0, endzeit=t0)
+
+%matplotlib
+plt.plot(point, freq)
+plt.xlabel('Zeit(s)')
+plt.ylabel('Af [1/120s')
+plt.title("Af Stressblock 1")
 
 def peaks_in_block(fname):
     df = load_blocks()
@@ -20,36 +32,15 @@ def peaks_in_block(fname):
     endzeit = t0
     return freq, point
 
-%matplotlib
-plt.plot(point, freq)
-
-for i in peaks_in_block("../../Daten/BekJan/"):
-    print(peaks_in_block)
-    
-    list_blocks.append(peaks_in_block(fname))
-    print(peaks_in_block)
-    
-for i in os.listdir('../../Daten/BekJan/'):
-for filename in os.listdir('../../Daten/BekJan/'):
-    if filename.endswith(".vhdr")
-        #print(os.path.join(directory, filename))
-        continue
-    else:
-        continue
-
-import glob
 
 for filepath in glob.iglob('../../Daten/BekJan/*.vhdr'):
     print(filepath)
     for i in peaks_in_block('../../Daten/BekJan/'):
         print(i)
 
-#plt.plot(point, 20+np.array(freq))
+plt.plot(point, 20+np.array(freq))
 #
-#
-#x  =extractedData
-#y = extractedData_2
-#z = extractedData_3
+
 #
 #fig, ax = plt.subplots()
 #ax.plot(y, label='stress_2')
@@ -69,8 +60,11 @@ if __name__ == '__main__':
     if process_all:
         list_blocks = []
         for filepath in glob.iglob('../../Daten/BekJan/*.vhdr'):
-        ls.append(peaks_in_block(filepath))
-        print(ls)
+            ls.append(peaks_in_block(filepath))
+            plt.plot(point,freq)
+            print(ls)
+        plt.show()
+        
     else:
         load_blocks("../../Daten/BekJan/HOAF_13.vhdr")
     
