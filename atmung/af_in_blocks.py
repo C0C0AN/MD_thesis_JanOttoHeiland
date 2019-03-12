@@ -26,7 +26,7 @@ def af_blocks(fname, dauer=60, schritt=5, start=0, endzeit=None):
 
     if endzeit is None:
         endzeit = times[-1]
-    stop = dauer
+    stop = start + dauer
     freq = []
     point = []
     while stop <= endzeit:
