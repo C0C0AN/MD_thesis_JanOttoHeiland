@@ -13,7 +13,7 @@ def number_peaks(peak_times, start, stop):
     return len(peak_times[(peak_times >= start) & (peak_times < stop)])
 
 
-def af_blocks(fname, dauer=60):
+def af_blocks(fname, dauer=60, schritt=5):
     '''
     return af /min Zeit(xAchse)
     '''
@@ -32,8 +32,8 @@ def af_blocks(fname, dauer=60):
     while stop <= endzeit:
         t.append(0.5*(start + stop))
         l.append(number_peaks(peak_times, start, stop))
-        start = start + dauer
-        stop = stop + dauer
+        start = start + schritt
+        stop = stop + schritt
     return l, t
 
 
@@ -61,9 +61,12 @@ if __name__ == '__main__':
                    help='Dateinamen, die angezeigt werden sollen')
     p.add_argument('-d', '--dauer', type=float, default=60,
                    help='Frequenzdauer')
+    p.add_argument('-s', '--step', type=float, default=5,
+                   help='Moving average window size')
     args = p.parse_args()
+
     for fname in args.file:
-        l, t = af_blocks(fname, dauer=args.dauer)
+        l, t = af_blocks(fname, dauer=args.dauer, schritt=args.step)
         plt.figure(path.basename(fname))
         plot_af(l, t, dauer=args.dauer)
         plot_blocks(fname)
