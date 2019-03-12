@@ -27,14 +27,14 @@ def af_blocks(fname, dauer=60, schritt=5):
     endzeit = times[-1]
     start = 0
     stop = dauer
-    l = []
-    t = []
+    freq = []
+    point = []
     while stop <= endzeit:
-        t.append(0.5*(start + stop))
-        l.append(number_peaks(peak_times, start, stop))
+        point.append(0.5*(start + stop))
+        freq.append(number_peaks(peak_times, start, stop))
         start = start + schritt
         stop = stop + schritt
-    return l, t
+    return freq, point
 
 
 def plot_af(l, t, dauer=60):
