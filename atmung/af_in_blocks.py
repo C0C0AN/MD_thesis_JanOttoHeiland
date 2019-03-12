@@ -59,7 +59,7 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('file', nargs='*', default=["../../Daten/BekJan/HOAF_16.vhdr"],
                    help='Dateinamen, die angezeigt werden sollen')
-    p.add_argument('-d', '--dauer', type=float,
+    p.add_argument('-d', '--dauer', type=float, default=60,
                    help='Frequenzdauer')
     args = p.parse_args()
     for fname in args.file:
