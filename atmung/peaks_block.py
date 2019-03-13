@@ -11,11 +11,17 @@ from af_in_blocks import af_blocks
 from os import path
 import matplotlib.pyplot as plt
 import glob
-
-df = load_blocks()
-fname = "../../Daten/BekJan/HOAF_03.vhdr"   
-s0, t0, s1, t1, s2, t2 = df.loc[path.basename(fname)]
-freq, point = af_blocks(fname, start=s0, endzeit=t0)
+#
+def peaks_in_block1(fname, dauer=60):
+    '''
+    Methode um es für einen Probanden auszurechnen, 
+    dafür relativen Pfad mit Name des Probanden versehen
+    '''
+    df = load_blocks()
+    fname = "../../Daten/BekJan/"  
+    s0, t0, s1, t1, s2, t2 = df.loc[path.basename(fname)]
+    freq, point = af_blocks(fname, start=s0, endzeit=t0)
+    return freq, point - point[0] + 0.5 * dauer
 
 %matplotlib
 plt.plot(point, freq)
@@ -28,13 +34,17 @@ def peaks_in_block(fname, dauer=60):
     s0, t0, s1, t1, s2, t2 = df.loc[path.basename(fname)]
     freq, point = af_blocks(fname, dauer=dauer, start=s2, endzeit=t2)
     point = np.array(point)
+    '''
+    da wir den moving average betrachten, verlieren wir am Anfang und am Ende 
+    Zeit diese Zeit müssen wir wieder hinzurechnen
+    '''
     return freq, point - point[0] + 0.5 * dauer
 
 
-for filepath in glob.iglob('../../Daten/BekJan/*.vhdr'):
-    print(filepath)
-    for i in peaks_in_block('../../Daten/BekJan/'):
-        print(i)
+#for filepath in glob.iglob('../../Daten/BekJan/*.vhdr'):
+#    print(filepath)
+#    for i in peaks_in_block('../../Daten/BekJan/'):
+#        print(i)
 
 plt.plot(point, 20+np.array(freq))
 
@@ -42,11 +52,19 @@ plt.plot(point, 20+np.array(freq))
 if __name__ == '__main__':
     process_all = True
     if process_all:
-        ls= []     
+        ls = []
+        point = None
         filenames = [path.join('../../Daten/BekJan/', f) 
                      for f in load_blocks().index]
         for filepath in filenames:
-            ls.append(peaks_in_block(filepath))
+            freq, point = peaks_in_block(filepath)
+            ls.append(freq)
+            matrix = np.array(ls)
+            dmatrix = pd.DataFrame(matrix)
+
+dmatrix.index=df.index           
+            
+            
             plt.plot(point,freq)
             plt.xlabel('Zeit(s)')
             plt.ylabel('Af 1/120s')
