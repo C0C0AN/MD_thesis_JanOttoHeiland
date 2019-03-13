@@ -21,38 +21,33 @@ def peaks_in_block1P(fname, dauer=60):
     fname = "../../Daten/BekJan/"  
     s0, t0, s1, t1, s2, t2 = df.loc[path.basename(fname)]
     freq, point = af_blocks(fname, dauer=dauer, start=s2, endzeit=t2)
+    point = np.array(point)
     #freq, point = af_blocks(fname, start=s0, endzeit=t0)
     '''
     Plot der nicht die Datenpunkte sondern noch die Zeiten betrachtet,
     da kein Vergleich zwischen den Blöcken
     '''
-    %matplotlib
-    plt.plot(point, freq)
-    plt.xlabel('Zeit(s)')
-    plt.ylabel('Af [1/120s')
-    plt.title("Af Stressblock 1")
-    plt.gca().axvspan(6,154, facecolor='0.8',alpha = 0.5)
-    plt.gca().axvspan(182,330, facecolor='0.8',alpha = 0.5)
-    plt.gca().axvspan(358,506, facecolor='0.8',alpha = 0.5)
-    plt.gca().axvspan(534,682, facecolor='0.8',alpha = 0.5)
-    return freq, point - point[0] + 0.5 * dauer
+%matplotlib
+plt.plot(point, freq)
+plt.xlabel('Zeit(s)')
+plt.ylabel('Af 1/120s')
+plt.title("Af_Stressblock_x")
+plt.gca().axvspan(6,154, facecolor='0.8',alpha = 0.5)
+plt.gca().axvspan(182,330, facecolor='0.8',alpha = 0.5)
+plt.gca().axvspan(358,506, facecolor='0.8',alpha = 0.5)
+plt.gca().axvspan(534,682, facecolor='0.8',alpha = 0.5)
+return freq, point - point[0] + 0.5 * dauer
 
 def peaks_in_block(fname, dauer=60):
     df = load_blocks()
     s0, t0, s1, t1, s2, t2 = df.loc[path.basename(fname)]
-    freq, point = af_blocks(fname, dauer=dauer, start=s2, endzeit=t2)
+    freq, point = af_blocks(fname, dauer=dauer, start=s0, endzeit=t0)
     point = np.array(point)
     '''
     da wir den moving average betrachten, verlieren wir am Anfang und am Ende 
     Zeit diese Zeit müssen wir wieder hinzurechnen
     '''
     return freq, point - point[0] + 0.5 * dauer
-
-
-#for filepath in glob.iglob('../../Daten/BekJan/*.vhdr'):
-#    print(filepath)
-#    for i in peaks_in_block('../../Daten/BekJan/'):
-#        print(i)
 
 if __name__ == '__main__':
     process_all = True
@@ -67,9 +62,7 @@ if __name__ == '__main__':
             matrix = np.array(ls)
             dmatrix = pd.DataFrame(matrix)
 
-dmatrix.index=df.index    
-k = pd.DataFrame(dmatrix)       
-k.to_csv('alle_Probanden_peaks.csv')     
+  
 df_peak = k.transpose()
 
 '''
