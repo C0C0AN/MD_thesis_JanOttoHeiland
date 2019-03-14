@@ -25,19 +25,23 @@ def fix_ch_bug(ifname, ofname, max_ch_len=11):
         io.write(v)
 
 
-def load_vhdr(fname, verbose=True):
-    """
-    Return arrays data, times, and raw.
-    """
+def raw_vhdr(fname, verbose=True):
     try:
         backup_fname = fname + ".backup"
         shutil.copyfile(fname, backup_fname)
         fix_ch_bug(fname, fname)
         raw = read_raw_brainvision(fname, preload=True, stim_channel=False, 
                                    verbose=verbose)
+        return raw
     finally:
         shutil.move(backup_fname, fname)
 
+
+def load_vhdr(fname, verbose=True):
+    """
+    Return arrays data, times, and raw.
+    """
+    raw = raw_vhdr(fname, verbose=verbose)
     data = raw.get_data()
     raw.pick_channels(['Resp'])
     data, times = raw[:]
