@@ -89,7 +89,6 @@ if __name__ == '__main__':
         Plot bei dem nochmal 1000000 Datenpunkte in einem Daenpunkt zusammen gefasst werden 
         '''
         s = 100000
-        print("blub")
         plt.title(path.basename(fname) + "s=" + str(s))
         rdata, rtimes = reduce_mean(times, size=s), reduce_mean(data, size=s)
         plt.plot(rtimes, zscore(rdata))
