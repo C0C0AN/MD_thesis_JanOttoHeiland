@@ -5,10 +5,12 @@ Created on Thu Mar 14 13:37:06 2019
 
 @author: jan
 """
+import pandas as pd
 from matplotlib import pyplot as plt
 from resp import raw_vhdr
 from os import path
 from blocks import load_blocks
+from scipy.stats import zscore
 
 
 def load_eda(fname, verbose=True):
@@ -39,23 +41,32 @@ def reduce_mean(a, size=1000):
     return a.mean(axis=1)
 
 
+def compute_reduced_edas(s, filenames):
+    ls = []
+    if True:
+        #times = None
+        rs = 1
+        for filepath in filenames:
+            data, times, _ = load_eda(filepath)
+            ls.append((reduce_mean(times, size=s), reduce_mean(data, size=s)))
+    return ls
+
+
 if __name__ == '__main__':
     process_all = True
     if process_all:
         '''
         s kann flexibel angepasst werden jenachdem wieviele Datenpunkte wir darstellen wollen 
         '''
-        ls = []
-        #times = None
+        s = 50000
+        rs = 1
         filenames = [path.join('../../Daten/BekJan/', f) 
                      for f in load_blocks().index]
-        for filepath in filenames:
-            data, times, _ = load_eda(filepath)
-            s = 5000
-            ls.append((reduce_mean(times, size=s), reduce_mean(data, size=s)))
+
+        ls = compute_reduced_edas(s, filenames)
         for (times, data) in ls:
-            plt.plot(times, data)
-            plt.title('alle Probanden EDA' + "s=" + str(s))
+            plt.plot(times, pd.Series(data).rolling(rs).mean())
+            plt.title('alle Probanden EDA' + " s=" + str(s) + " rs=" + str(rs))
     else:
         fname = "../../Daten/BekJan/HOAF_16.vhdr"
         data, times, _ = load_eda(fname)
@@ -65,7 +76,8 @@ if __name__ == '__main__':
         s = 100000
         print("blub")
         plt.title(path.basename(fname) + "s=" + str(s))
-        plt.plot(reduce_mean(times, size=s), reduce_mean(data, size=s))
+        rdata, rtimes = reduce_mean(times, size=s), reduce_mean(data, size=s)
+        plt.plot(rtimes, zscore(rdata))
         # matrix = np.array(ls)
         #dmatrix = pd.DataFrame(matrix)
     plt.show()
