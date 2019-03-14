@@ -5,17 +5,13 @@ Created on Thu Mar 14 13:37:06 2019
 
 @author: jan
 """
+import numpy as np
 from matplotlib import pyplot as plt
+from blocks import load_blocks
+import numpy as np
 from resp import raw_vhdr
 from os import path
-
-
-def reduce_mean(a, size=1000):
-    rest = len(a) % size
-    if rest != 0:
-        a = a[:-rest]   # elemente abschneiden, sodass len(a) Vielfaches von size
-    a = a.reshape(-1, size)
-    return a.mean(axis=1)
+import pandas as pd
 
 
 def load_eda(fname, verbose=True):
@@ -23,15 +19,65 @@ def load_eda(fname, verbose=True):
     Return arrays data, times, and raw.
     """
     raw = raw_vhdr(fname, verbose)
-    raw.pick_channels([raw.ch_names[0]])
+    channel = raw.ch_names[0]
+    '''
+    Überprüfung, ob wrklich der GSR channel der erste ist
+    GSR= Galvanic skin response
+    '''
+    assert channel.startswith('GSR')
+    raw.pick_channels([channel])
     data, times = raw[:]
     return data[0], times, raw
 
 
+def reduce_mean(a, size=1000):
+    '''
+    size gibt an wieviele Datenpunkte in einem Datenpunkt zusammen gefasst werden
+    Da über 19 Millionen Datenpunkte vorlagen ,a = a.reshape(-1, size) : 
+    '''
+    rest = len(a) % size
+    if rest != 0:
+        a = a[:-rest]   # elemente abschneiden, sodass len(a) Vielfaches von size
+    a = a.reshape(-1, size)
+    return a.mean(axis=1)
+
+
 if __name__ == '__main__':
+    process_all = False
+    if process_all:
+        ls = []
+        #times = None
+        filenames = [path.join('../../Daten/BekJan/', f) 
+                     for f in load_blocks().index]
+        for filepath in filenames:
+            data, times, _ = load_eda(filepath)
+            s = 5000
+            ls.append((reduce_mean(times, size=s), reduce_mean(data, size=s)))
+        for (data, times) in ls:
+            plt.plot(times, data)
+    else:
+        fname = "../../Daten/BekJan/HOAF_16.vhdr"
+        data, times, _ = load_eda(fname)
+        '''
+        Plot bei dem nochmal 1000000 Datenpunkte in einem Daenpunkt zusammen gefasst werden 
+        '''
+        s=100000
+        print("blub")
+        plt.title(path.basename(fname) + "s=" + str(s))
+        plt.plot(reduce_mean(times, size=s), reduce_mean(data, size=s))
+        # matrix = np.array(ls)
+        #dmatrix = pd.DataFrame(matrix)
+    plt.show()
+        
+def test_it():
     fname = "../../Daten/BekJan/HOAF_16.vhdr"
     data, times, _ = load_eda(fname)
-    s=5000;
-    plt.title(path.basename(fname) + ", s=" + str(s))
-    plt.plot(reduce_mean(times, size=s), reduce_mean(data, size=s))
+    plt.plot(times, data)
     plt.show()
+    
+#dmatrix.plot(kind='line', subplots=True, grid=True, title="Stressblock 2 peaks",
+#         sharex=True, sharey=False, legend=False)
+#
+#[ax.legend(loc=1) for ax in plt.gcf().axes]   
+    
+
