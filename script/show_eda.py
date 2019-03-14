@@ -5,6 +5,7 @@ Created on Thu Mar 14 13:37:06 2019
 
 @author: jan
 """
+import pickle
 import pandas as pd
 from matplotlib import pyplot as plt
 from resp import raw_vhdr
@@ -41,14 +42,18 @@ def reduce_mean(a, size=1000):
     return a.mean(axis=1)
 
 
-def compute_reduced_edas(s, filenames):
+def compute_reduced_eda(s, filenames, backup="reduced_eda.pickle"):
     ls = []
-    if True:
-        #times = None
+    if path.exists(backup):
+        with open(backup, "rb") as io:
+            return pickle.load(io)
+    else:
         rs = 1
         for filepath in filenames:
             data, times, _ = load_eda(filepath)
             ls.append((reduce_mean(times, size=s), reduce_mean(data, size=s)))
+        with open(backup, "wb") as io:
+            pickle.dump(ls, io)
     return ls
 
 
@@ -63,7 +68,7 @@ if __name__ == '__main__':
         filenames = [path.join('../../Daten/BekJan/', f) 
                      for f in load_blocks().index]
 
-        ls = compute_reduced_edas(s, filenames)
+        ls = compute_reduced_eda(s, filenames)
         for (times, data) in ls:
             plt.plot(times, pd.Series(data).rolling(rs).mean())
             plt.title('alle Probanden EDA' + " s=" + str(s) + " rs=" + str(rs))
