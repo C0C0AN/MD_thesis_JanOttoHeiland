@@ -10,6 +10,7 @@ from matplotlib import pyplot as plt
 from resp import raw_vhdr
 from os import path
 import pandas as pd
+from blocks import load_blocks
 
 
 def load_eda(fname, verbose=True):
@@ -41,7 +42,7 @@ def reduce_mean(a, size=1000):
 
 
 if __name__ == '__main__':
-    process_all = False
+    process_all = True
     if process_all:
         '''
         s kann flexibel angepasst werden jenachdem wieviele Datenpunkte wir darstellen wollen 
