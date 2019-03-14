@@ -6,6 +6,8 @@ import numpy as np
 from scipy import *
 import pingouin as pg
 import matplotlib.pyplot as plt
+from scipy import stats
+from pingouin import ttest
 
 #HOAF test sub 03 hier die 3 cortisolmessung verworfen, wenn nicht muss man noch mal bei den Zahlen unten verbessern
 #2 Annahme 1 Mann = musik
@@ -42,6 +44,14 @@ alle_c = music_c + sound_c
 alle_d = music_d + sound_d 
 alle_e = music_e + sound_e
 alle_f = music_f + sound_f
+
+#Zugriff Daten für alle 
+a = c_diff_t.iloc[:,alle_a]
+b = c_diff_t.iloc[:,alle_b]
+c = c_diff_t.iloc[:,alle_c]
+d = c_diff_t.iloc[:,alle_d]
+e = c_diff_t.iloc[:,alle_e]
+f = c_diff_t.iloc[:,alle_f]
 
 #Zugriff Daten für die Musikgruppe
 am = c_diff_t.iloc[:,music_a]
@@ -126,3 +136,9 @@ plt.xlabel('Zeitpunkte')
 plt.ylabel('Cortisol nmol/L')
 plt.title("Mittelwerte Cortisol beide Gruppen")
 plt.legend()
+
+''' Normalvertteilt?-Nein wenn p unter alpha'''
+stats.shapiro(mean_w)
+ttest(mean_w, mean_m, paired =False)
+'''Man Whitney U Test , angenommen nicht parametrisch'''
+pg.mwu(mean_w, mean_m)
