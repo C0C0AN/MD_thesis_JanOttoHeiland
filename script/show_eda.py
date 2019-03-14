@@ -33,7 +33,8 @@ def load_eda(fname, verbose=True):
 def reduce_mean(a, size=1000):
     '''
     size gibt an wieviele Datenpunkte in einem Datenpunkt zusammen gefasst werden
-    Da über 19 Millionen Datenpunkte vorlagen ,a = a.reshape(-1, size) : 
+    Da über 19 Millionen Datenpunkte vorlagen ,a = a.reshape(-1, size) : Anordnung des Arrays sodass 1000 SPalten haben
+    dann kann der Mittelwert einer Zeile über die 1000 Spalten gebildet werden
     '''
     rest = len(a) % size
     if rest != 0:
@@ -43,6 +44,11 @@ def reduce_mean(a, size=1000):
 
 
 def compute_reduced_eda(s, filenames, backup="reduced_eda.pickle"):
+    '''
+    diese Methode schreibt den lange dauernden Schritt, nämlich das auslesen der 
+    Datenpunkte und erstellen der Liste auf dei Festplatte um bei erneutem Aufrufen 
+    den Prozess zu beschleunigen (pickle ist das python modul dafür)
+    '''
     ls = []
     if path.exists(backup):
         with open(backup, "rb") as io:
@@ -51,7 +57,7 @@ def compute_reduced_eda(s, filenames, backup="reduced_eda.pickle"):
         rs = 1
         for filepath in filenames:
             data, times, _ = load_eda(filepath)
-            ls.append((reduce_mean(times, size=s), reduce_mean(data, size=s)))
+            ls.append((reduce_mean(times, size=s), reduce_mean(data, size=s)))#reduced mean(um die Datenpunkte zu minimieren)
         with open(backup, "wb") as io:
             pickle.dump(ls, io)
     return ls
@@ -70,6 +76,10 @@ if __name__ == '__main__':
 
         ls = compute_reduced_eda(s, filenames)
         for (times, data) in ls:
+            '''
+            würde man vor data noch zscore setzten, dann kann man sich die Abweichungen vom Mittelwert, bzw der Std darstellen
+            rolling (moving average): Glätten der Daten durch Vergleich mit den Nachbardaten 
+            '''
             plt.plot(times, pd.Series(data).rolling(rs).mean())
             plt.title('alle Probanden EDA' + " s=" + str(s) + " rs=" + str(rs))
     else:
