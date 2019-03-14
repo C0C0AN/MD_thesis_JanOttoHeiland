@@ -41,6 +41,13 @@ def peaks_in_block1P(fname = "../../Daten/BekJan/HOAF_02.vhdr"  , dauer=60):
     return freq, point
 
 def peaks_in_block(fname, dauer=60, block0=True):
+    '''
+    aufrufen der Funktion für 1 Stressblock: freq0, point0 = peaks_in_block(fname)
+    block0= true, für 2 Stressblock: 
+    freq2, point2 = peaks_in_block(fname, block0=False), block0 auf false
+    plot: plt.plot(point0, freq0)
+    plt.plot(point2, freq2)
+    '''
     df = load_blocks()
     s0, t0, s1, t1, s2, t2 = df.loc[path.basename(fname)]
     s, t = (s0, t0) if block0 else (s2, t2)
