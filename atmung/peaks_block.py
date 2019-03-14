@@ -40,10 +40,11 @@ def peaks_in_block1P(fname = "../../Daten/BekJan/HOAF_02.vhdr"  , dauer=60):
     plt.gca().axvspan(534,682, facecolor='0.8',alpha = 0.5)
     return freq, point
 
-def peaks_in_block(fname, dauer=60):
+def peaks_in_block(fname, dauer=60, block0=True):
     df = load_blocks()
     s0, t0, s1, t1, s2, t2 = df.loc[path.basename(fname)]
-    freq, point = af_blocks(fname, dauer=dauer, start=s0, endzeit=t0)
+    s, t = (s0, t0) if block0 else (s2, t2)
+    freq, point = af_blocks(fname, dauer=dauer, start=s, endzeit=t)
     point = np.array(point)
     '''
     da wir den moving average betrachten, verlieren wir am Anfang und am Ende 
