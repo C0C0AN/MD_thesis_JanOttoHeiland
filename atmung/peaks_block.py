@@ -11,14 +11,15 @@ from af_in_blocks import af_blocks
 from os import path
 import matplotlib.pyplot as plt
 import glob
-#
-def peaks_in_block1P(fname, dauer=60):
+import numpy as np
+
+
+def peaks_in_block1P(fname = "../../Daten/BekJan/HOAF_02.vhdr"  , dauer=60):
     '''
     Methode um es für einen Probanden auszurechnen, 
     dafür relativen Pfad mit Name des Probanden versehen
     '''
     df = load_blocks()
-    fname = "../../Daten/BekJan/"  
     s0, t0, s1, t1, s2, t2 = df.loc[path.basename(fname)]
     freq, point = af_blocks(fname, dauer=dauer, start=s2, endzeit=t2)
     point = np.array(point)
@@ -27,16 +28,17 @@ def peaks_in_block1P(fname, dauer=60):
     Plot der nicht die Datenpunkte sondern noch die Zeiten betrachtet,
     da kein Vergleich zwischen den Blöcken
     '''
-%matplotlib
-plt.plot(point, freq)
-plt.xlabel('Zeit(s)')
-plt.ylabel('Af 1/120s')
-plt.title("Af_Stressblock_x")
-plt.gca().axvspan(6,154, facecolor='0.8',alpha = 0.5)
-plt.gca().axvspan(182,330, facecolor='0.8',alpha = 0.5)
-plt.gca().axvspan(358,506, facecolor='0.8',alpha = 0.5)
-plt.gca().axvspan(534,682, facecolor='0.8',alpha = 0.5)
-return freq, point - point[0] + 0.5 * dauer
+    point = point - point[0] + 0.5 * dauer
+    #%matplotlib
+    plt.plot(point, freq)
+    plt.xlabel('Zeit(s)')
+    plt.ylabel('Af 1/120s')
+    plt.title("Af_Stressblock_x")
+    plt.gca().axvspan(6,154, facecolor='0.8',alpha = 0.5)
+    plt.gca().axvspan(182,330, facecolor='0.8',alpha = 0.5)
+    plt.gca().axvspan(358,506, facecolor='0.8',alpha = 0.5)
+    plt.gca().axvspan(534,682, facecolor='0.8',alpha = 0.5)
+    return freq, point
 
 def peaks_in_block(fname, dauer=60):
     df = load_blocks()
