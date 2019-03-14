@@ -7,8 +7,6 @@ Created on Thu Mar 14 13:37:06 2019
 """
 import numpy as np
 from matplotlib import pyplot as plt
-from blocks import load_blocks
-import numpy as np
 from resp import raw_vhdr
 from os import path
 import pandas as pd
@@ -45,6 +43,9 @@ def reduce_mean(a, size=1000):
 if __name__ == '__main__':
     process_all = False
     if process_all:
+        '''
+        s kann flexibel angepasst werden jenachdem wieviele Datenpunkte wir darstellen wollen 
+        '''
         ls = []
         #times = None
         filenames = [path.join('../../Daten/BekJan/', f) 
