@@ -5,11 +5,9 @@ Created on Thu Mar 14 13:37:06 2019
 
 @author: jan
 """
-import numpy as np
 from matplotlib import pyplot as plt
 from resp import raw_vhdr
 from os import path
-import pandas as pd
 from blocks import load_blocks
 
 
@@ -55,15 +53,16 @@ if __name__ == '__main__':
             data, times, _ = load_eda(filepath)
             s = 5000
             ls.append((reduce_mean(times, size=s), reduce_mean(data, size=s)))
-        for (data, times) in ls:
+        for (times, data) in ls:
             plt.plot(times, data)
+            plt.title('alle Probanden EDA' + "s=" + str(s))
     else:
         fname = "../../Daten/BekJan/HOAF_16.vhdr"
         data, times, _ = load_eda(fname)
         '''
         Plot bei dem nochmal 1000000 Datenpunkte in einem Daenpunkt zusammen gefasst werden 
         '''
-        s=100000
+        s = 100000
         print("blub")
         plt.title(path.basename(fname) + "s=" + str(s))
         plt.plot(reduce_mean(times, size=s), reduce_mean(data, size=s))
@@ -71,6 +70,7 @@ if __name__ == '__main__':
         #dmatrix = pd.DataFrame(matrix)
     plt.show()
         
+
 def test_it():
     fname = "../../Daten/BekJan/HOAF_16.vhdr"
     data, times, _ = load_eda(fname)
