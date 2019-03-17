@@ -15,6 +15,9 @@ RESPONSE = 'Response/R128'
 
 
 def plot_block_hist(ann):
+    '''
+    mask: array wann eine Response Antwort vorhanden ist
+    '''
     mask = ann.description == RESPONSE
     response_times = ann.onset[mask]
     plt.hist(response_times, cumulative=True, bins=200)
@@ -22,7 +25,11 @@ def plot_block_hist(ann):
 
 def find_blocks(ann, delta=1.5):
     '''
-    hier werden die Start und Endzeitpunkte der drei Blocks gefunden
+    hier wird definiert nach welchen Kriterien die Anfangs und Endzeiten der 
+    Blöcke gefunden werden
+    s0 wann kommt die erste und t_last wann die letze Response Antwort,
+    ausgehend davon wird untersucht wann die Response Antwort nicht mehr vorhanden ist
+    delta: in welchem Zeitintervall wird nach den REponse Antworten gesucht 
     '''
     mask = ann.description == RESPONSE
     s0 = np.argmax(mask)
