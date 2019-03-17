@@ -15,7 +15,9 @@ def number_peaks(peak_times, start, stop):
 
 def af_blocks(fname, dauer=60, schritt=5, start=0, endzeit=None):
     '''
-    return af /min Zeit(xAchse)
+    return af /min Zeit(xAchse), peak loc: Peaks des eindimensionalen datavectors
+    times: Zeitpunkte der Peaks, peak_mag: Aulenkung der Peaks. 
+
     '''
     data, times, raw = load_vhdr(fname)
     datavector = data.reshape(-1)
@@ -30,6 +32,12 @@ def af_blocks(fname, dauer=60, schritt=5, start=0, endzeit=None):
     freq = []
     point = []
     while stop <= endzeit:
+	'''
+	Das Fenster in dem die Peaks gezählt werden verschiebt sich immer 
+	um eine gewisse Zeit (Schritt), Der Wert der ermittelten Peaks, wird 
+	immer in die Mitte eines solchen Intervalls geschrieben, sodass am 
+	Anfang und am Ende eine Zeitlücke simuliert wird. 	
+	'''
         point.append(0.5*(start + stop))
         freq.append(number_peaks(peak_times, start, stop))
         start = start + schritt
@@ -45,6 +53,10 @@ def plot_af(l, t, dauer=60):
 
 
 def plot_blocks(fname):
+'''
+so-t2 sind die Anfangs und Endzeiten von allen 3 Blöcken in chronologischer Reihenfolge
+definiert über die REsponseantwort während der Blöcke. 
+'''
     df = load_blocks()
     s0, t0, s1, t1, s2, t2 = df.loc[path.basename(fname)]
     plt.gca().axvspan(s0, t0, alpha = 0.2, color='red')
@@ -55,6 +67,10 @@ def plot_blocks(fname):
 
 if __name__ == '__main__':
     import argparse
+	'''
+	dauer: Zeitfenster in dem die Peaks gezählt werden, 
+	schritt: er Zeitabstand, um den sich dieses Fenster verschiebt
+	'''
 
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('file', nargs='*', default=["../../Daten/BekJan/HOAF_16.vhdr"],
