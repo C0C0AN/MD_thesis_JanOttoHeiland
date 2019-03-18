@@ -75,7 +75,7 @@ if __name__ == '__main__':
                      for f in load_blocks().index]
 
         ls = compute_reduced_eda(s, filenames)
-        for (times, data) in ls:
+        for (times,data) in ls:
             '''
             würde man vor data noch zscore setzten, dann kann man sich die Abweichungen vom Mittelwert, bzw der Std darstellen
             rolling (moving average): Glätten der Daten durch Vergleich mit den Nachbardaten 
@@ -84,7 +84,7 @@ if __name__ == '__main__':
             plt.title('alle Probanden EDA' + " s=" + str(s) + " rs=" + str(rs))
     else:
         fname = "../../Daten/BekJan/HOAF_16.vhdr"
-        data, times, _ = load_eda(fname)
+        times, data, _ = load_eda(fname)
         '''
         Plot bei dem nochmal 1000000 Datenpunkte in einem Daenpunkt zusammen gefasst werden 
         '''
