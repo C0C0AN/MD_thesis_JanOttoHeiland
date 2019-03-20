@@ -13,7 +13,7 @@ def number_peaks(peak_times, start, stop):
     return len(peak_times[(peak_times >= start) & (peak_times < stop)])
 
 
-def af_blocks(fname, dauer=60, schritt=5, start=0, endzeit=None):
+def af_blocks(fname, dauer=30, schritt=1.45, start=0, endzeit=None):
     '''
     return af /min Zeit(xAchse), peak loc: Peaks des eindimensionalen datavectors
     times: Zeitpunkte der Peaks, peak_mag: Aulenkung der Peaks. 
@@ -38,8 +38,14 @@ def af_blocks(fname, dauer=60, schritt=5, start=0, endzeit=None):
 	immer in die Mitte eines solchen Intervalls geschrieben, sodass am 
 	Anfang und am Ende eine Zeitlücke simuliert wird. 	
 	'''
+        '''   
         point.append(0.5*(start + stop))
         freq.append(number_peaks(peak_times, start, stop))
+        start = start + schritt
+        stop = stop + schritt
+        '''
+        point.append(start)
+        freq.append(number_peaks(peak_times, start-0.5*dauer, start+0.5*dauer))
         start = start + schritt
         stop = stop + schritt
     return freq, point
@@ -53,10 +59,10 @@ def plot_af(l, t, dauer=60):
 
 
 def plot_blocks(fname):
-'''
-so-t2 sind die Anfangs und Endzeiten von allen 3 Blöcken in chronologischer Reihenfolge
-definiert über die REsponseantwort während der Blöcke. 
-'''
+    '''
+    so-t2 sind die Anfangs und Endzeiten von allen 3 Blöcken in chronologischer Reihenfolge
+    definiert über die REsponseantwort während der Blöcke. 
+    '''
     df = load_blocks()
     s0, t0, s1, t1, s2, t2 = df.loc[path.basename(fname)]
     plt.gca().axvspan(s0, t0, alpha = 0.2, color='red')
@@ -67,10 +73,10 @@ definiert über die REsponseantwort während der Blöcke.
 
 if __name__ == '__main__':
     import argparse
-	'''
-	dauer: Zeitfenster in dem die Peaks gezählt werden, 
-	schritt: er Zeitabstand, um den sich dieses Fenster verschiebt
-	'''
+    '''
+    dauer: Zeitfenster in dem die Peaks gezählt werden, 
+    schritt: er Zeitabstand, um den sich dieses Fenster verschiebt
+    '''
 
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('file', nargs='*', default=["../../Daten/BekJan/HOAF_16.vhdr"],
