@@ -72,22 +72,26 @@ if __name__ == '__main__':
             matrix = np.array(ls)
             dmatrix = pd.DataFrame(matrix)
 
-  
+df_peak.columns = ['HOAF_01',' HOAF_02','HOAF_03','HOAF_04','HOAF_05','HOAF_09','HOAF_11','HOAF_12','HOAF_13','HOAF_14','HOAF_15','HOAF_16','HOAF_17','HOAF_19','HOAF_20','HOAF_21','HOAF_22','HOAF_23','HOAF_24','HOAF_25','HOAF_26','HOAF_27','HOAF_28','HOAF_29']
+k = pd.DataFrame(dmatrix) 
 df_peak = k.transpose()
 
 '''
 Plot für einzelne Probanden und Kombination 
 '''
-df_peak.plot(x=None, y=[1,2], title='Af_2_Stressblock')
-df_peak.index.name = 'blocktime'
 
+df_peak.index.names= ['Datenpunkt alle 1,45 sek']
+plt.ylabel('Atemfreq[1/60sek]')
+df_peak.plot(x=None, y=[1,2], title='Af_2_Stressblock')
 '''
 Plot über alle Probanden
 '''
-df_peak.plot(kind='line', subplots=True, grid=True, title="Stressblock 2 peaks",
-             sharex=True, sharey=False, legend=False)
+df_peak.plot(kind='line', subplots=True, grid=True,
+             sharex=True, sharey=False, fontsize=7)
 
-[ax.legend(loc=1) for ax in plt.gcf().axes]    
-
+[ax.legend(loc=1) for ax in plt.gcf().axes] 
+plt.xlabel('Datenpunkt alle 1,45 sek', fontsize=15)
+plt.ylabel('Atemfreq[1/60sek]', horizontalalignment='right', y=18, labelpad =25, fontsize=15)
+plt.title("Stressblock 2 Atemfrequenz", horizontalalignment='right',x=0.7, y=30,  fontsize=40)
   
 
