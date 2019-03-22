@@ -64,7 +64,7 @@ def compute_reduced_eda(s, filenames, backup="reduced_eda.pickle"):
 
 
 if __name__ == '__main__':
-    process_all = False
+    process_all = True
     if process_all:
         '''
         s kann flexibel angepasst werden jenachdem wieviele Datenpunkte wir darstellen wollen 
@@ -82,8 +82,10 @@ if __name__ == '__main__':
             '''
             plt.plot(times, pd.Series(data).rolling(rs).mean())
             plt.title('alle Probanden EDA' + " s=" + str(s) + " rs=" + str(rs))
+            plt.xlabel("Zeit(s)")
+            plt.ylabel("EDA(S)",labelpad=25)
     else:
-        fname = "../../Daten/BekJan/HOAF_17.vhdr"
+        fname = "../../Daten/BekJan/HOAF_16.vhdr"
         times, data, _ = load_eda(fname)
         '''
         Plot bei dem nochmal 1000000 Datenpunkte in einem Daenpunkt zusammen gefasst werden 
@@ -92,20 +94,26 @@ if __name__ == '__main__':
         plt.title(path.basename(fname) + "s=" + str(s))
         rdata, rtimes = reduce_mean(times, size=s), reduce_mean(data, size=s)
         plt.plot(rtimes, zscore(rdata))
-        plt.xlabel('Zeit(s)')
-        plt.ylabel('EDA(S)')
-        plt.grid(True)
-        #plt.plot(rtimes, rdata)
         # matrix = np.array(ls)
         #dmatrix = pd.DataFrame(matrix)
     plt.show()
         
 
 def test_it():
-    fname = "../../Daten/BekJan/HOAF_01.vhdr"
+    fname = "../../Daten/BekJan/HOAF_16.vhdr"
     data, times, _ = load_eda(fname)
     plt.plot(times, data)
     plt.show()
+    
+def test_it():
+    s=50000
+    fname = "../../Daten/BekJan/HOAF_29.vhdr"
+    data, times, _ = load_eda(fname)
+    data, times = reduce_mean(times, size=s), reduce_mean(data, size=s)
+    plt.plot(pd.Series(data).rolling(rs).mean(),times)
+    plt.title('HOAF_29 EDA')
+    plt.xlabel("Zeit(s)")
+    plt.ylabel("EDA(S)",labelpad=25)
     
 #dmatrix.plot(kind='line', subplots=True, grid=True, title="Stressblock 2 peaks",
 #         sharex=True, sharey=False, legend=False)
