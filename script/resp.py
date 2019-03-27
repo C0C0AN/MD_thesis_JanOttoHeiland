@@ -6,7 +6,8 @@ from glob import glob
 from os import path
 import shutil
 import re
-
+from scipy import signal
+from scipy.signal import lfilter
 
 def fix_ch_bug(ifname, ofname, max_ch_len=11):
     """
@@ -41,10 +42,12 @@ def load_vhdr(fname, verbose=True):
     """
     Return arrays data, times, and raw.
     """
+    rs=10000
     raw = raw_vhdr(fname, verbose=verbose)
     data = raw.get_data()
     raw.pick_channels(['Resp'])
     data, times = raw[:]
+    data=signal.detrend(data, axis=-1, type='linear')
     return data, times, raw
 
 
@@ -60,5 +63,5 @@ if __name__ == '__main__':
         for f in find_vhdrs(sys.argv[1]):
             print(f)
     else:
-        assert len(sys.argv) >= 3
+        #assert len(sys.argv) >= 3
         fix_ch_bug(sys.argv[1], sys.argv[2])
