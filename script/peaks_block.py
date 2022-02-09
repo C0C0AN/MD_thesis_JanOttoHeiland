@@ -40,6 +40,7 @@ def peaks_in_block1P(fname = "../../Daten/BekJan/HOAF_02.vhdr"  , dauer=60):
     plt.gca().axvspan(534,682, facecolor='0.8',alpha = 0.5)
     return freq, point
 
+
 def peaks_in_block(fname, dauer=60, block0=True):
     '''
     aufrufen der Funktion für 1 Stressblock: freq0, point0 = peaks_in_block(fname)
@@ -58,6 +59,7 @@ def peaks_in_block(fname, dauer=60, block0=True):
     Zeit diese Zeit müssen wir wieder hinzurechnen
     '''
     return freq, point - point[0] + 0.5 * dauer
+
 
 if __name__ == '__main__':
     process_all = True
