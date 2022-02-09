@@ -7,7 +7,8 @@ from blocks import load_blocks
 from matplotlib import pyplot as plt
 from mne.preprocessing.peak_finder import peak_finder
 from os import path
-
+import numpy as np
+from scipy import signal
 
 def number_peaks(peak_times, start, stop):
     return len(peak_times[(peak_times >= start) & (peak_times < stop)])
@@ -50,7 +51,7 @@ def number_peaks(peak_times, start, stop):
 ##        stop = stop + schritt
 #    return freq, point
 
-def af_blocks(fname, dauer=40, schritt=1.45, start=0, endzeit=None):
+def af_blocks(fname, dauer=30, schritt=1.45, start=0, endzeit=None):
     '''
     return af /min Zeit(xAchse), peak loc: Peaks des eindimensionalen datavectors
     times: Zeitpunkte der Peaks, peak_mag: Aulenkung der Peaks. 
@@ -59,7 +60,7 @@ def af_blocks(fname, dauer=40, schritt=1.45, start=0, endzeit=None):
     print(start)
     data, times, raw = load_vhdr(fname)
     datavector = data.reshape(-1)
-    threshold = (max(datavector)-min(datavector)) / 15
+    threshold=0.6*datavector.std()
 
     peak_loc, peak_mag = peak_finder(datavector,thresh=threshold, extrema=-1)
     peak_times = times[peak_loc]
@@ -104,8 +105,8 @@ def af_blocks(fname, dauer=40, schritt=1.45, start=0, endzeit=None):
                     freq.append(anzahl/dauer)
         else:
             point.append(start)
-            freq.append(-1.0)
-            display("Murks am Ende")
+          #  freq.append(-1.0)
+           # display("Murks am Ende")
         start = start + schritt
     return freq, point
 
