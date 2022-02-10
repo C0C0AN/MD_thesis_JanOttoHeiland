@@ -43,12 +43,6 @@ def onset_sorted(nr, exp):
     return df.onset.is_monotonic and df.onset.max() < 1000
 
 
-def decimal_ziffern(b):
-    from math import ceil, log10
-
-    return int(ceil(log10(float(b))))
-
-
 def fix_onset(nr=3, exp=0):
     file_name = get_tsv(nr, exp)
     if file_name is None:
