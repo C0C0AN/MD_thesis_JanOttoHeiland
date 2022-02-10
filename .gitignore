@@ -4,3 +4,9 @@
 .~lock.*
 
 Zeiten der Blöcke .odt
+
+*.png
+
+*.pdf
+
+script/puls/output1.xlsx
