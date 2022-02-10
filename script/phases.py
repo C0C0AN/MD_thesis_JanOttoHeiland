@@ -3,14 +3,17 @@ Analysiere die Phasen (wann wurde welcher Aufgabentyp geloest?).
 Frage: ist dies bei jedem Probanden ungefaehr gleich?
 """
 import pandas as pd
-from itertools import groupby
+import numpy as np
 
 from phases_fix import out_tsv as tsv_file
 
 
 def phase_times(nr, exp):
     """Finde die Start- und Endzeitpunkte der Phasen."""
-    df = pd.read_csv(tsv_file(nr, exp), sep="\t")
+    fn = tsv_file(nr, exp)
+    if fn is None:
+        return None
+    df = pd.read_csv(fn, sep="\t")
     df = df[["onset", "duration", "trial_type", "condition"]]
     mask = df.trial_type.str.startswith("stress")
     mask |= df.trial_type.str.startswith("relax")
@@ -31,3 +34,13 @@ def phase_times(nr, exp):
     tf = tf.T
     tf = tf.reindex(columns=["start", "end", "trial_type", "condition"])
     return tf
+
+
+if __name__ == "__main__":
+    from functools import reduce
+
+    mi = reduce(np.minimum, (phase_times(nr, 0) for nr in range(2, 30)))
+    ma = reduce(np.maximum, (phase_times(nr, 0) for nr in range(2, 30)))
+    diff = ma.copy()
+    diff[["start", "end"]] = (ma[["start", "end"]] - mi[["start", "end"]])
+    print("diff\n", diff)
