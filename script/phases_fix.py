@@ -8,7 +8,7 @@ EXPERIMENT_TYPE = ["stress_run-1", "stress_run-2", "rest"]
 
 
 def get_tsv(nr=3, exp=0):
-    """Dateinamen für ein Probanden mit `nr` und Experimenttyp `exp`
+    """Dateinamen fuer ein Probanden mit `nr` und Experimenttyp `exp`
     oder `None`, falls Datei nicht vorhanden.
     """
     prob = "sub-{nr:02d}".format(nr=nr)
@@ -33,8 +33,8 @@ def out_tsv(nr=3, exp=0):
 
 
 def onset_sorted(nr, exp):
-    """Prüfe, ob die `onset` Spalte sortiert ist.
-    Hintergrund: Fehler beim Übertragen des Kommas.
+    """Pruefe, ob die `onset` Spalte sortiert ist.
+    Hintergrund: Fehler beim Uebertragen des Kommas.
     """
     file_name = get_tsv(nr=nr, exp=exp)
     if file_name is None:
