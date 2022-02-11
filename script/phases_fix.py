@@ -12,8 +12,10 @@ def get_tsv(nr=3, exp=0):
     oder `None`, falls Datei nicht vorhanden.
     """
     prob = "sub-{nr:02d}".format(nr=nr)
-    file_name = "{prefix}/HOAF/HOAF_BIDS/{prob}/func/{prob}_task-{exp}_events.tsv".format(
-        prob=prob, exp=EXPERIMENT_TYPE[exp], prefix=PREFIX
+    file_name = (
+        "{prefix}/HOAF/HOAF_BIDS/{prob}/func/{prob}_task-{exp}_events.tsv".format(
+            prob=prob, exp=EXPERIMENT_TYPE[exp], prefix=PREFIX
+        )
     )
     if not path.exists(file_name):
         return None
@@ -21,6 +23,7 @@ def get_tsv(nr=3, exp=0):
 
 
 def out_tsv(nr=3, exp=0):
+    """Dateiname, unter dem die bereinigte TSV Datei abgelegt wird."""
     dir = "{prefix}/HOAF/tsv".format(prefix=PREFIX)
     if not path.exists(dir):
         from os import makedirs
@@ -34,6 +37,7 @@ def out_tsv(nr=3, exp=0):
 
 def onset_sorted(nr, exp):
     """Pruefe, ob die `onset` Spalte sortiert ist.
+
     Hintergrund: Fehler beim Uebertragen des Kommas.
     """
     file_name = get_tsv(nr=nr, exp=exp)
@@ -44,6 +48,10 @@ def onset_sorted(nr, exp):
 
 
 def fix_onset(nr=3, exp=0):
+    """Gehe die "onset" Spalte durch und füge ein Komma ein, falls nicht vorhanden.
+
+    Das Komma wird so eingefügt, dass die Werte aufsteigend sind.
+    """
     file_name = get_tsv(nr, exp)
     if file_name is None:
         return
@@ -69,5 +77,5 @@ if __name__ == "__main__":
             try:
                 fix_onset(nr, exp)
             except:
-                print(get_tsv(nr, exp))
+                print("Error on file '{}'".format(get_tsv(nr, exp)))
                 raise
