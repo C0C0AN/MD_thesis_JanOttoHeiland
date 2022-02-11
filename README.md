@@ -23,3 +23,5 @@ pip install mne
 ToDo:
 - [ ] What kind of data is used?
 - [ ] Where does it need to be located?
+
+For using the scripts, please configure `config.toml` by copying the template `config.example.toml` and setting the directories accordingly.

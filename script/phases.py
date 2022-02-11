@@ -39,8 +39,11 @@ def phase_times(nr, exp):
 if __name__ == "__main__":
     from functools import reduce
 
-    mi = reduce(np.minimum, (phase_times(nr, 0) for nr in range(2, 30)))
-    ma = reduce(np.maximum, (phase_times(nr, 0) for nr in range(2, 30)))
+    ptimes = {(n, e): phase_times(n, 0) for n in range(1, 30) for e in range(2)}
+    ptimes = {k: v for k, v in ptimes.items() if v is not None}
+
+    mi = reduce(np.minimum, ptimes.values())
+    ma = reduce(np.maximum, ptimes.values())
     diff = ma.copy()
     diff[["start", "end"]] = (ma[["start", "end"]] - mi[["start", "end"]])
     print("diff\n", diff)
