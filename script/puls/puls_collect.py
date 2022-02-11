@@ -1,4 +1,5 @@
 # coding: utf-8
+"""Suche alle Informationen ueber die Pulsdaten zusammen."""
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -32,3 +33,21 @@ cols = [*cols[-2:], *cols[:-2]]
 idx = pd.MultiIndex.from_tuples(cols, names=df.columns.names)
 df = df.reindex(columns=idx)
 df.to_csv("puls_phasen.tsv", sep="\t", float_format="%.02f")
+
+# Lade Gruppezugehoerigkeit
+from data import HOAF_BIDS
+from os import path
+
+prob = pd.read_csv(path.join(HOAF_BIDS, "participants.tsv"), sep="\t")
+prob["prob_nr"] = prob.participant_id.str.extract(r"sub-(.+)").astype(int)
+prob = prob.set_index("prob_nr")
+prob = prob.dropna()
+prob = prob.drop(columns=["participant_id"])
+extra = pd.concat((prob, prob), keys=[1, 2])
+extra.index.set_names(["run", "prob_nr"])
+
+df = df.reorder_levels(["run", "prob_nr"], axis=1)
+df = df.T
+df = df.assign(**{c: extra[c] for c in extra.columns})
+df = df.T
+df.to_csv("puls_alles.tsv", sep="\t", float_format="%.02f")
