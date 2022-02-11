@@ -5,6 +5,12 @@ import pandas as pd
 from phases_analyze import load_phasen
 
 
+def load_runs():
+    runs = load_phasen("../phasen.tsv")
+    runs['nr'] = list(range(8)) + list(range(8))
+    runs = runs.reset_index().set_index(["run", "nr"])
+    return runs
+
 file_ma = '../../../Daten/physio_resp_pulse/physio_sub_version/sub_combined.ods'
 df = pd.read_excel(file_ma)
 # df = df.round(0).astype(int)
@@ -16,9 +22,7 @@ df = df.reset_index(drop=True).set_index(["prob_nr", "run"])
 df = df.T
 df['time'] = [i * 1.45 for i in df.index]
 
-runs = load_phasen("../phasen.tsv")
-runs['nr'] = list(range(8)) + list(range(8))
-runs = runs.reset_index().set_index(["run", "nr"])
+runs = load_runs()
 run = runs.groupby("nr").mean()
 run.repetition = run.repetition.astype(int)
 

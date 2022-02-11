@@ -3,6 +3,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from puls_collect import load_runs
+
 
 def load_puls_alles(file_name="puls_alles.tsv"):
     df = pd.read_csv(file_name, sep="\t", index_col=[0, 1])
@@ -18,15 +20,33 @@ def load_puls_alles(file_name="puls_alles.tsv"):
     return df
 
 
+runs = load_runs()
+runs = runs[runs.columns[:-2]].reset_index()
+
 df = load_puls_alles()
 df.drop(columns=["age", "sex", "group"], inplace=True)
+phasen = df.T[("", "phase")].copy()
 
 # Experiment 1: relax/stress Vergleich in den Runs
-phasen = df.T[('', 'phase')]
-relax1 = df.T[phasen.isin([1, 2, 5, 6])][1].melt()["value"]
-stress1 = df.T[phasen.isin([3, 4, 7, 8])][1].melt()["value"]
+def select(mask, run, df=df):
+    mask = runs[mask].nr.tolist()
+    return df.T[phasen.isin(mask)][run].copy().melt(value_name="puls")
 
-data = pd.concat((relax1, stress1), keys=[0, 1], names=["sr"]).reset_index()[["sr", "value"]]
-data["run"] = 1
-sns.violinplot(y="value", x="run", data=data, hue="sr", split=True, inner="quart", bw=0.1)
+
+relax1 = select((runs.run == 1) & (runs.trial_type == "relax"), run=1)
+stress1 = select((runs.run == 1) & (runs.trial_type == "stress"), run=1)
+relax2 = select((runs.run == 2) & (runs.trial_type == "relax"), run=2)
+stress2 = select((runs.run == 2) & (runs.trial_type == "stress"), run=2)
+
+data1 = pd.concat((relax1, stress1), keys=["relax", "stress"], names=["trial type"])
+data2 = pd.concat((relax2, stress2), keys=["relax", "stress"], names=["trial type"])
+data = pd.concat((data1, data2), keys=[1, 2], names=["run"])
+
+data = data.reset_index()
+fig = sns.violinplot(
+    y="puls", x="run", data=data, hue="trial type", split=True, inner="quart", bw=0.2
+)
+plt.ylabel("Puls [bpm]")
+plt.xlabel("Run")
+plt.savefig("stress_vs_relax.pdf")
 plt.show()
