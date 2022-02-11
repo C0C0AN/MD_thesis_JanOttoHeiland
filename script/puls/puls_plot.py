@@ -20,33 +20,56 @@ def load_puls_alles(file_name="puls_alles.tsv"):
     return df
 
 
-runs = load_runs()
-runs = runs[runs.columns[:-2]].reset_index()
+baseline_correction = True
+phasen = load_runs()
+phasen = phasen[phasen.columns[:-2]].reset_index()
 
 df = load_puls_alles()
 df.drop(columns=["age", "sex", "group"], inplace=True)
-phasen = df.T[("", "phase")].copy()
+phasen_cols = df.T[("", "phase")].copy()
+puls = df[2:].sort_index()
+if baseline_correction:
+    pmean = puls.mean(axis=1)
+    for c in puls.columns:
+        puls[c] -= pmean
 
-# Experiment 1: relax/stress Vergleich in den Runs
-def select(mask, run, df=df):
-    mask = runs[mask].nr.tolist()
-    return df.T[phasen.isin(mask)][run].copy().melt(value_name="puls")
+
+def select_cols(mask):
+    mask = phasen[mask].nr.tolist()
+    return phasen_cols.isin(mask)
 
 
-relax1 = select((runs.run == 1) & (runs.trial_type == "relax"), run=1)
-stress1 = select((runs.run == 1) & (runs.trial_type == "stress"), run=1)
-relax2 = select((runs.run == 2) & (runs.trial_type == "relax"), run=2)
-stress2 = select((runs.run == 2) & (runs.trial_type == "stress"), run=2)
+def select(mask, run, puls=puls):
+    mask = mask & (phasen.run == run)
+    return puls.T[select_cols(mask)][run].melt(value_name="puls")
 
-data1 = pd.concat((relax1, stress1), keys=["relax", "stress"], names=["trial type"])
-data2 = pd.concat((relax2, stress2), keys=["relax", "stress"], names=["trial type"])
-data = pd.concat((data1, data2), keys=[1, 2], names=["run"])
 
-data = data.reset_index()
-fig = sns.violinplot(
-    y="puls", x="run", data=data, hue="trial type", split=True, inner="quart", bw=0.2
-)
-plt.ylabel("Puls [bpm]")
-plt.xlabel("Run")
-plt.savefig("stress_vs_relax.pdf")
-plt.show()
+def compare_data(compare, column, runs=[1, 2], puls=puls):
+    data = [
+        pd.concat(
+            [select(column == t, run=r, puls=puls) for t in compare],
+            keys=compare,
+            names=["trial"],
+        )
+        for r in runs
+    ]
+    return pd.concat(data, keys=runs, names=["run"]).reset_index()
+
+
+def compare_plot(compare, column, runs=[1, 2]):
+    data = compare_data(compare, column, runs=runs)
+    fig = sns.violinplot(
+        y="puls", x="run", data=data, hue="trial", split=True, inner="quart", bw=0.2
+    )
+    plt.xlabel("Run")
+    return fig
+
+
+if __name__ == "__main__":
+    # Experiment 1: relax/stress Vergleich in den Phasen
+    compare_plot(["relax", "stress"], phasen.trial_type, runs=[1, 2])
+    plt.ylabel("Puls [bpm] baseline" if baseline_correction else "Puls [bpm]")
+    plt.savefig(
+        "stress_vs_relax_base.pdf" if baseline_correction else "stress_vs_relax_abs.pdf"
+    )
+    plt.show()
