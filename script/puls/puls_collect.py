@@ -48,5 +48,4 @@ extra.index.set_names(["run", "prob_nr"])
 df = df.reorder_levels(["run", "prob_nr"], axis=1)
 df = df.T
 df = df.assign(**{c: extra[c] for c in extra.columns})
-df = df.T
-df.to_csv("puls_alles.tsv", sep="\t", float_format="%.02f")
+df.reset_index().to_csv("puls_alles.tsv", sep="\t", float_format="%.02f", index=False)
