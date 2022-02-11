@@ -9,21 +9,12 @@ def load_phasen(file_name="phasen.tsv"):
     return pf
 
 
-def group_except(index="prob_nr", pf=None):
-    if pf is None:
-        pf = load_phasen()
-    if isinstance(index, str):
-        return mean_over([index], pf=pf)
-    assert isinstance(index, list)
-    idx = [i for i in pf.index.names if i not in index]
-    return pf.groupby(idx, sort=False)
-
-
 if __name__ == "__main__":
     pf = load_phasen("phasen.tsv")
-    runs = group_except(["prob_nr"], pf).mean()
+    runs = pf.groupby(level=[1, 2, 3, 4], sort=False).mean()
     r1, r2 = runs.loc[1], runs.loc[2]
     print(
         "maximale Abweichung zwischen den Runs",
         abs(r1.values - r2.values).round(3).max(),
     )
+    runs.round(3).to_html("phasen_zeiten.html")
