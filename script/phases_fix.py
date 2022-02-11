@@ -1,9 +1,9 @@
 """Fix Onset Bug."""
 from os import path
 import pandas as pd
+from data import PREFIX
 
 
-PREFIX = "/media/jan/Elements"
 EXPERIMENT_TYPE = ["stress_run-1", "stress_run-2", "rest"]
 
 
@@ -30,9 +30,10 @@ def out_tsv(nr=3, exp=0):
 
         makedirs(dir, mode=771)
     prob = "sub-{nr:02d}".format(nr=nr)
-    return "{dir}/{prob}_{exp}_events.tsv".format(
+    file_name = "{dir}/{prob}_{exp}_events.tsv".format(
         dir=dir, prob=prob, exp=EXPERIMENT_TYPE[exp]
     )
+    return file_name if path.exists(file_name) else None
 
 
 def onset_sorted(nr, exp):
