@@ -1,6 +1,5 @@
 # coding: utf-8
 """Suche alle Informationen ueber die Pulsdaten zusammen."""
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from phases_analyze import load_phasen
@@ -18,7 +17,7 @@ df = df.T
 df['time'] = [i * 1.45 for i in df.index]
 
 runs = load_phasen("../phasen.tsv")
-runs['nr'] = [*range(8)] + [*range(8)]
+runs['nr'] = list(range(8)) + list(range(8))
 runs = runs.reset_index().set_index(["run", "nr"])
 run = runs.groupby("nr").mean()
 run.repetition = run.repetition.astype(int)
