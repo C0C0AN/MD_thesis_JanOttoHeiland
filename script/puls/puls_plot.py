@@ -93,17 +93,19 @@ def math_vs_rotation(bw=0.2):
     plt.legend().set_title("Aufgabentyp")
 
 
-def stress_12():
+def wiederholung_12(trial_type="stress"):
     compare_plot(
         [1, 2],
         phasen.repetition,
         runs=[1, 2],
-        pre_condition=(phasen.trial_type == "stress"),
+        pre_condition=(phasen.trial_type == trial_type),
     )
     plt.legend().set_title("Wiederholung")
-    plt.title("Stress")
+    plt.title(trial_type.capitalize())
     plt.savefig(
-        "stress_wiederholung_" + ("base" if baseline_correction else "abs") + ".pdf"
+        f"{trial_type}_wiederholung_"
+        + ("base" if baseline_correction else "abs")
+        + ".pdf"
     )
 
 
@@ -111,5 +113,6 @@ if __name__ == "__main__":
     # stress_vs_relax()
     # plt.figure()
     # math_vs_rotation(bw=0.1)
-    # stress_12()
+    # wiederholung_12("stress")
+    wiederholung_12("relax")
     plt.show()
