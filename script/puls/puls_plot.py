@@ -74,9 +74,12 @@ def compare_plot(compare, column, runs=[1, 2], bw=0.2, pre_condition=(phasen.run
     return fig
 
 
-def stress_vs_relax():
+all_phasen = (phasen.run > 0)
+
+
+def stress_vs_relax(pre=all_phasen):
     """Experiment 1: relax/stress Vergleich in den Phasen"""
-    compare_plot(["relax", "stress"], phasen.trial_type, runs=[1, 2])
+    compare_plot(["relax", "stress"], phasen.trial_type, runs=[1, 2], pre_condition=pre)
     plt.savefig(
         "stress_vs_relax_base.pdf" if baseline_correction else "stress_vs_relax_abs.pdf"
     )
@@ -107,11 +110,18 @@ def wiederholung_12(trial_type="stress"):
         + ".pdf"
     )
 
-
 if __name__ == "__main__":
     # stress_vs_relax()
     # plt.figure()
     # math_vs_rotation(bw=0.1)
     # wiederholung_12("stress")
-    wiederholung_12("relax")
+    # wiederholung_12("relax")
+
+    stress_vs_relax()
+    plt.figure()
+    stress_vs_relax(pre=(phasen.condition == "math"))
+    plt.title("Aufgabe: Mathematik")
+    plt.figure()
+    stress_vs_relax(pre=(phasen.condition == "rotation"))
+    plt.title("Aufgabe: Rotation")
     plt.show()
