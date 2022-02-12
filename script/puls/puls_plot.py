@@ -76,15 +76,21 @@ def compare_plot(
     compare,
     column,
     runs=[1, 2],
-    bw=0.2,
-    ylim=(-20, 30),
     pre_condition=True,
     select=select_cols,
+    bw=0.2,
+    ylim=(-20, 30),
+    file_name=None,
 ):
     global phasen, baseline_correction
     data = compare_data(
         compare, column, runs=runs, pre_condition=pre_condition, select=select
     )
+    if file_name is not None:
+        data[["run", "trial", "puls"]].to_csv(
+            file_name, sep="\t", index=False, float_format="%05.2f"
+        )
+
     fig = sns.violinplot(
         y="puls", x="run", data=data, hue="trial", split=True, inner="quart", bw=bw
     )
@@ -97,7 +103,11 @@ def compare_plot(
 def stress_vs_relax(pre_condition=None):
     """Experiment 1: relax/stress Vergleich in den Phasen"""
     compare_plot(
-        ["relax", "stress"], phasen.trial_type, runs=[1, 2], pre_condition=pre_condition
+        ["relax", "stress"],
+        phasen.trial_type,
+        runs=[1, 2],
+        pre_condition=pre_condition,
+        file_name="stress_vs_relax.tsv",
     )
     plt.savefig(
         "stress_vs_relax_" + ("base" if baseline_correction else "abs") + ".pdf"
@@ -145,34 +155,73 @@ def stress_vs_relax_unterplots():
     plt.title("Aufgabe: Rotation")
 
 
+def select_rows(mask, pre_condition, run, puls, phasen):
+    """Wie `select_cols`, nur dass Zeilen ausgewaelt werden.
+
+    `pre_condition` wählt Spalten aus.
+    """
+    phasen_mask = pre_condition & (phasen.run == run)
+    col_mask = phasen_cols.isin(phasen[phasen_mask].nr.tolist())
+    return puls.loc[(run, mask), col_mask]
+
+
 def musik_vs_sound():
-    def select_rows(mask, pre_condition, run, puls, phasen):
-        col_mask = (phasen_cols > -2) & pre_condition
-        return puls.loc[(run, mask), col_mask]
-
-    def select_stress_rows(mask, pre_condition, run, puls, phasen):
-        phasen_mask = (phasen.trial_type == "stress") & (phasen.run == run)
-        stress_cols = phasen_cols.isin(phasen[phasen_mask].nr.tolist())
-        return puls.loc[(run, mask), stress_cols]
-
     compare_plot(
         ["Musik", "Sound"],
         prob_info.group,
         runs=[1, 2],
         select=select_rows,
     )
-    plt.title("Stress und Relax")
+    plt.title("Gesamte Zeit inklusive Pausen")
     savefig("musik_vs_sound_all")
-    plt.figure()
 
+    plt.figure()
     compare_plot(
         ["Musik", "Sound"],
         prob_info.group,
         runs=[1, 2],
-        select=select_stress_rows,
+        select=select_rows,
+        pre_condition=(phasen.run > 0),
+    )
+    plt.title("Gesamte Zeit ohne Pausen")
+    savefig("musik_vs_sound_both")
+
+    plt.figure()
+    compare_plot(
+        ["Musik", "Sound"],
+        prob_info.group,
+        runs=[1, 2],
+        select=select_rows,
+        pre_condition=(phasen.trial_type == "stress"),
+        file_name="musik_vs_sound_under_stress.tsv",
     )
     plt.title("Stress")
     savefig("musik_vs_sound_stress")
+
+    plt.figure()
+    compare_plot(
+        ["Musik", "Sound"],
+        prob_info.group,
+        runs=[1, 2],
+        select=select_rows,
+        pre_condition=(phasen.trial_type == "relax"),
+        file_name="musik_vs_sound_under_relex.tsv",
+    )
+    plt.title("Relax")
+    savefig("musik_vs_sound_relax")
+
+
+def statistics_example():
+    data = compare_data(
+        ["Musik", "Sound"],
+        prob_info.group,
+        runs=[1, 2],
+        select=select_rows,
+        pre_condition=(phasen.trial_type == "relax"),
+    )
+    data[["run", "trial", "puls"]].to_csv(
+        "musik_vs_sound_under_relex.tsv", sep="\t", index=False, float_format="%05.2f"
+    )
 
 
 if __name__ == "__main__":
@@ -182,8 +231,8 @@ if __name__ == "__main__":
 
     # stress_vs_relax()
     # plt.figure()
-    math_vs_rotation(bw=0.1)
-    plt.figure()
+    # math_vs_rotation(bw=0.1)
+    # plt.figure()
     # wiederholung_12("stress")
     # wiederholung_12("relax")
     # stress_vs_relax_unterplots()
