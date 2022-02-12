@@ -48,16 +48,16 @@ def compare_data(
     compare,
     column,
     runs=[1, 2],
-    pre_condition=None,
+    pre_col=None,
 ):
     global phasen
-    if pre_condition is None:
-        pre_condition = phasen.run > 0
+    if pre_col is None:
+        pre_col = phasen.run > 0
     return pd.concat(
         [
             pd.concat(
                 [
-                    select(pre_condition & (column == t), run=r).melt(value_name="puls")
+                    select(pre_col & (column == t), run=r).melt(value_name="puls")
                     for t in compare
                 ],
                 keys=compare,
@@ -70,13 +70,11 @@ def compare_data(
     ).reset_index()
 
 
-def compare_plot(
-    compare, column, runs=[1, 2], bw=0.2, pre_condition=None, ylim=(-20, 30)
-):
+def compare_plot(compare, column, runs=[1, 2], bw=0.2, pre_col=None, ylim=(-20, 30)):
     global phasen, baseline_correction
-    if pre_condition is None:
-        pre_condition = phasen.run > 0
-    data = compare_data(compare, column, runs=runs, pre_condition=pre_condition)
+    if pre_col is None:
+        pre_col = phasen.run > 0
+    data = compare_data(compare, column, runs=runs, pre_col=pre_col)
     fig = sns.violinplot(
         y="puls", x="run", data=data, hue="trial", split=True, inner="quart", bw=bw
     )
@@ -86,11 +84,9 @@ def compare_plot(
     return fig
 
 
-def stress_vs_relax(pre_condition=None):
+def stress_vs_relax(pre_col=None):
     """Experiment 1: relax/stress Vergleich in den Phasen"""
-    compare_plot(
-        ["relax", "stress"], phasen.trial_type, runs=[1, 2], pre_condition=pre_condition
-    )
+    compare_plot(["relax", "stress"], phasen.trial_type, runs=[1, 2], pre_col=pre_col)
     plt.savefig(
         "stress_vs_relax_base.pdf" if baseline_correction else "stress_vs_relax_abs.pdf"
     )
@@ -111,7 +107,7 @@ def wiederholung_12(trial_type="stress"):
         [1, 2],
         phasen.repetition,
         runs=[1, 2],
-        pre_condition=(phasen.trial_type == trial_type),
+        pre_col=(phasen.trial_type == trial_type),
     )
     plt.legend().set_title("Wiederholung")
     plt.title(trial_type.capitalize())
@@ -133,9 +129,9 @@ if __name__ == "__main__":
 
     stress_vs_relax()
     plt.figure()
-    stress_vs_relax(pre_condition=(phasen.condition == "math"))
+    stress_vs_relax(pre_col=(phasen.condition == "math"))
     plt.title("Aufgabe: Mathematik")
     plt.figure()
-    stress_vs_relax(pre_condition=(phasen.condition == "rotation"))
+    stress_vs_relax(pre_col=(phasen.condition == "rotation"))
     plt.title("Aufgabe: Rotation")
     plt.show()
