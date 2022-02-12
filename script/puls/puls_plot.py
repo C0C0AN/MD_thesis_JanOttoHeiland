@@ -45,14 +45,12 @@ def compare_data(
     criteria,
     runs=[1, 2],
     pre_col=None,
-    pre_row=None,
     select=select_cols,
 ):
     global phasen, puls
 
     if pre_col is None:
         pre_col = phasen.run > 0
-    selected_puls = puls if pre_row is None else puls[pre_row]
     return pd.concat(
         [
             pd.concat(
@@ -60,7 +58,7 @@ def compare_data(
                     select(
                         pre_col & (criteria == t),
                         run=r,
-                        puls=selected_puls,
+                        puls=puls,
                         phasen=phasen,
                     ).melt(value_name="puls")
                     for t in compare
@@ -82,14 +80,13 @@ def compare_plot(
     bw=0.2,
     ylim=(-20, 30),
     pre_col=None,
-    pre_row=None,
     select=select_cols,
 ):
     global phasen, baseline_correction
     if pre_col is None:
         pre_col = phasen.run > 0
     data = compare_data(
-        compare, column, runs=runs, pre_col=pre_col, pre_row=pre_row, select=select
+        compare, column, runs=runs, pre_col=pre_col, select=select
     )
     fig = sns.violinplot(
         y="puls", x="run", data=data, hue="trial", split=True, inner="quart", bw=bw
