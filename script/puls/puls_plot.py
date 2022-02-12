@@ -24,9 +24,8 @@ baseline_correction = True
 phasen = load_runs()
 phasen = phasen[phasen.columns[:-2]].reset_index()
 df = load_puls_alles()
-df.drop(columns=["age", "sex", "group"], inplace=True)
-phasen_cols = df.T[("", "phase")].copy()
-puls = df[2:].sort_index()
+phasen_cols = df.T[("", "phase")].dropna()
+puls = df.drop(columns=["age", "sex", "group"])[2:].sort_index()
 if baseline_correction:
     pmean = puls.mean(axis=1)
     for c in puls.columns:
