@@ -69,7 +69,7 @@ def compare_data(
     ).reset_index()
 
 
-def compare_plot(compare, column, runs=[1, 2], bw=0.2, pre_condition=None):
+def compare_plot(compare, column, runs=[1, 2], bw=0.2, pre_condition=None, ylim=(-20, 30)):
     global phasen, baseline_correction
     if pre_condition is None:
         pre_condition = (phasen.run > 0)
@@ -79,6 +79,7 @@ def compare_plot(compare, column, runs=[1, 2], bw=0.2, pre_condition=None):
     )
     plt.ylabel("Puls [bpm] baseline" if baseline_correction else "Puls [bpm]")
     plt.xlabel("Run")
+    plt.ylim(ylim)
     return fig
 
 
