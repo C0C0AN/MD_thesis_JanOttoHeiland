@@ -33,20 +33,15 @@ def load_data(file_name="puls_alles.tsv", baseline_correction=True):
             puls[c] -= pmean
 
 
-def select(mask, run):
-    global puls, phasen
-
-    def select_cols(mask):
-        mask = phasen[mask].nr.tolist()
-        return phasen_cols.isin(mask)
-
-    cols = mask & (phasen.run == run)
-    return puls.T[select_cols(cols)][run]
+def select(mask, run, puls, phasen):
+    phasen_cols = mask & (phasen.run == run)
+    col_mask = phasen_cols.isin(phasen[phasen_cols].nr.tolist())
+    return puls.T[col_mask][run]
 
 
 def compare_data(
     compare,
-    column,
+    phasen_crit,
     runs=[1, 2],
     pre_col=None,
 ):
@@ -57,7 +52,9 @@ def compare_data(
         [
             pd.concat(
                 [
-                    select(pre_col & (column == t), run=r).melt(value_name="puls")
+                    select(
+                        pre_col & (phasen_crit == t), run=r, puls=puls, phasen=phasen
+                    ).melt(value_name="puls")
                     for t in compare
                 ],
                 keys=compare,
