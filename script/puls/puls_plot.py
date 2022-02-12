@@ -34,7 +34,7 @@ def load_data(file_name="puls_alles.tsv", baseline_correction=True):
             puls[c] -= pmean
 
 
-def select(mask, run, puls, phasen):
+def select_cols(mask, run, puls, phasen):
     phasen_mask = mask & (phasen.run == run)
     col_mask = phasen_cols.isin(phasen[phasen_mask].nr.tolist())
     return puls.loc[(run, slice(None)), col_mask]
@@ -42,10 +42,11 @@ def select(mask, run, puls, phasen):
 
 def compare_data(
     compare,
-    phasen_crit,
+    criteria,
     runs=[1, 2],
     pre_col=None,
     pre_row=None,
+    select=select_cols,
 ):
     global phasen, puls
 
@@ -57,7 +58,7 @@ def compare_data(
             pd.concat(
                 [
                     select(
-                        pre_col & (phasen_crit == t),
+                        pre_col & (criteria == t),
                         run=r,
                         puls=selected_puls,
                         phasen=phasen,
@@ -75,12 +76,21 @@ def compare_data(
 
 
 def compare_plot(
-    compare, column, runs=[1, 2], bw=0.2, ylim=(-20, 30), pre_col=None, pre_row=None
+    compare,
+    column,
+    runs=[1, 2],
+    bw=0.2,
+    ylim=(-20, 30),
+    pre_col=None,
+    pre_row=None,
+    select=select_cols,
 ):
     global phasen, baseline_correction
     if pre_col is None:
         pre_col = phasen.run > 0
-    data = compare_data(compare, column, runs=runs, pre_col=pre_col, pre_row=pre_row)
+    data = compare_data(
+        compare, column, runs=runs, pre_col=pre_col, pre_row=pre_row, select=select
+    )
     fig = sns.violinplot(
         y="puls", x="run", data=data, hue="trial", split=True, inner="quart", bw=bw
     )
@@ -135,7 +145,16 @@ def stress_vs_relax_unterplots():
 
 
 def musik_vs_sound():
-    pass
+    def select_rows(mask, run, puls, phasen):
+        return puls.loc[(run, mask), :]
+
+    compare_plot(
+        ["Musik", "Sound"],
+        prob_info.group,
+        runs=[1, 2],
+        pre_col=(prob_info.age > 0),
+        select=select_rows,
+    )
 
 
 if __name__ == "__main__":
