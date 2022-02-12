@@ -35,9 +35,9 @@ def load_data(file_name="puls_alles.tsv", baseline_correction=True):
 
 
 def select(mask, run, puls, phasen):
-    phasen_cols = mask & (phasen.run == run)
-    col_mask = phasen_cols.isin(phasen[phasen_cols].nr.tolist())
-    return puls.T[col_mask][run]
+    phasen_mask = mask & (phasen.run == run)
+    col_mask = phasen_cols.isin(phasen[phasen_mask].nr.tolist())
+    return puls.loc[(run, slice(None)), col_mask]
 
 
 def compare_data(
