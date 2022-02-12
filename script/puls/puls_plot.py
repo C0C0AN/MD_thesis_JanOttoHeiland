@@ -45,16 +45,22 @@ def compare_data(
     phasen_crit,
     runs=[1, 2],
     pre_col=None,
+    pre_row=None,
 ):
-    global phasen
+    global phasen, puls
+
     if pre_col is None:
         pre_col = phasen.run > 0
+    selected_puls = puls if pre_row is None else puls[pre_row]
     return pd.concat(
         [
             pd.concat(
                 [
                     select(
-                        pre_col & (phasen_crit == t), run=r, puls=puls, phasen=phasen
+                        pre_col & (phasen_crit == t),
+                        run=r,
+                        puls=selected_puls,
+                        phasen=phasen,
                     ).melt(value_name="puls")
                     for t in compare
                 ],
@@ -68,11 +74,13 @@ def compare_data(
     ).reset_index()
 
 
-def compare_plot(compare, column, runs=[1, 2], bw=0.2, pre_col=None, ylim=(-20, 30)):
+def compare_plot(
+    compare, column, runs=[1, 2], bw=0.2, ylim=(-20, 30), pre_col=None, pre_row=None
+):
     global phasen, baseline_correction
     if pre_col is None:
         pre_col = phasen.run > 0
-    data = compare_data(compare, column, runs=runs, pre_col=pre_col)
+    data = compare_data(compare, column, runs=runs, pre_col=pre_col, pre_row=pre_row)
     fig = sns.violinplot(
         y="puls", x="run", data=data, hue="trial", split=True, inner="quart", bw=bw
     )
@@ -86,7 +94,7 @@ def stress_vs_relax(pre_col=None):
     """Experiment 1: relax/stress Vergleich in den Phasen"""
     compare_plot(["relax", "stress"], phasen.trial_type, runs=[1, 2], pre_col=pre_col)
     plt.savefig(
-        "stress_vs_relax_base.pdf" if baseline_correction else "stress_vs_relax_abs.pdf"
+        "stress_vs_relax_" + ("base" if baseline_correction else "abs") + ".pdf"
     )
     plt.legend().set_title("Stimulus")
 
@@ -116,15 +124,7 @@ def wiederholung_12(trial_type="stress"):
     )
 
 
-if __name__ == "__main__":
-    # stress_vs_relax()
-    # plt.figure()
-    # math_vs_rotation(bw=0.1)
-    # wiederholung_12("stress")
-    # wiederholung_12("relax")
-    baseline_correction = True
-    load_data("puls_alles.tsv", baseline_correction=baseline_correction)
-
+def stress_vs_relax_unterplots():
     stress_vs_relax()
     plt.figure()
     stress_vs_relax(pre_col=(phasen.condition == "math"))
@@ -132,4 +132,23 @@ if __name__ == "__main__":
     plt.figure()
     stress_vs_relax(pre_col=(phasen.condition == "rotation"))
     plt.title("Aufgabe: Rotation")
+
+
+def musik_vs_sound():
+    pass
+
+
+if __name__ == "__main__":
+    baseline_correction = True
+    load_data("puls_alles.tsv", baseline_correction=baseline_correction)
+    print("geladen")
+
+    # stress_vs_relax()
+    # plt.figure()
+    # math_vs_rotation(bw=0.1)
+    # wiederholung_12("stress")
+    # wiederholung_12("relax")
+    # stress_vs_relax_unterplots()
+
+    musik_vs_sound()
     plt.show()
