@@ -44,13 +44,11 @@ def compare_data(
     compare,
     criteria,
     runs=[1, 2],
-    pre_condition=None,
+    pre_condition=True,
     select=select_cols,
 ):
     global phasen, puls
 
-    if pre_condition is None:
-        pre_condition = phasen.run > 0
     return pd.concat(
         [
             pd.concat(
@@ -79,12 +77,10 @@ def compare_plot(
     runs=[1, 2],
     bw=0.2,
     ylim=(-20, 30),
-    pre_condition=None,
+    pre_condition=True,
     select=select_cols,
 ):
     global phasen, baseline_correction
-    if pre_condition is None:
-        pre_condition = phasen.run > 0
     data = compare_data(
         compare, column, runs=runs, pre_condition=pre_condition, select=select
     )
@@ -149,7 +145,6 @@ def musik_vs_sound():
         ["Musik", "Sound"],
         prob_info.group,
         runs=[1, 2],
-        pre_condition=(prob_info.age > 0),
         select=select_rows,
     )
 
