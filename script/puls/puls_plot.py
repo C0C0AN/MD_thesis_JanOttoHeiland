@@ -34,8 +34,8 @@ def load_data(file_name="puls_alles.tsv", baseline_correction=True):
             puls[c] -= pmean
 
 
-def select_cols(mask, run, puls, phasen):
-    phasen_mask = mask & (phasen.run == run)
+def select_cols(mask, pre_condition, run, puls, phasen):
+    phasen_mask = pre_condition & mask & (phasen.run == run)
     col_mask = phasen_cols.isin(phasen[phasen_mask].nr.tolist())
     return puls.loc[(run, slice(None)), col_mask]
 
@@ -54,7 +54,8 @@ def compare_data(
             pd.concat(
                 [
                     select(
-                        pre_condition & (criteria == t),
+                        (criteria == t),
+                        pre_condition=pre_condition,
                         run=r,
                         puls=puls,
                         phasen=phasen,
@@ -145,10 +146,11 @@ def stress_vs_relax_unterplots():
 
 
 def musik_vs_sound():
-    def select_rows(mask, run, puls, phasen):
-        return puls.loc[(run, mask), :]
+    def select_rows(mask, pre_condition, run, puls, phasen):
+        col_mask = (phasen_cols > -2) & pre_condition
+        return puls.loc[(run, mask), col_mask]
 
-    def select_stress_rows(mask, run, puls, phasen):
+    def select_stress_rows(mask, pre_condition, run, puls, phasen):
         phasen_mask = (phasen.trial_type == "stress") & (phasen.run == run)
         stress_cols = phasen_cols.isin(phasen[phasen_mask].nr.tolist())
         return puls.loc[(run, mask), stress_cols]
@@ -180,7 +182,8 @@ if __name__ == "__main__":
 
     # stress_vs_relax()
     # plt.figure()
-    # math_vs_rotation(bw=0.1)
+    math_vs_rotation(bw=0.1)
+    plt.figure()
     # wiederholung_12("stress")
     # wiederholung_12("relax")
     # stress_vs_relax_unterplots()
