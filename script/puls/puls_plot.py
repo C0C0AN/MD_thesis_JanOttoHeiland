@@ -40,23 +40,33 @@ def select_cols(mask):
 
 def select(mask, run, puls=puls):
     mask = mask & (phasen.run == run)
-    return puls.T[select_cols(mask)][run].melt(value_name="puls")
+    return puls.T[select_cols(mask)][run]
 
 
-def compare_data(compare, column, runs=[1, 2], puls=puls):
-    data = [
-        pd.concat(
-            [select(column == t, run=r, puls=puls) for t in compare],
-            keys=compare,
-            names=["trial"],
-        )
-        for r in runs
-    ]
-    return pd.concat(data, keys=runs, names=["run"]).reset_index()
+def compare_data(
+    compare, column, runs=[1, 2], puls=puls, pre_condition=(phasen.run > 0)
+):
+    return pd.concat(
+        [
+            pd.concat(
+                [
+                    select(pre_condition & (column == t), run=r, puls=puls).melt(
+                        value_name="puls"
+                    )
+                    for t in compare
+                ],
+                keys=compare,
+                names=["trial"],
+            )
+            for r in runs
+        ],
+        keys=runs,
+        names=["run"],
+    ).reset_index()
 
 
-def compare_plot(compare, column, runs=[1, 2], bw=0.2):
-    data = compare_data(compare, column, runs=runs)
+def compare_plot(compare, column, runs=[1, 2], bw=0.2, pre_condition=(phasen.run > 0)):
+    data = compare_data(compare, column, runs=runs, pre_condition=pre_condition)
     fig = sns.violinplot(
         y="puls", x="run", data=data, hue="trial", split=True, inner="quart", bw=bw
     )
@@ -71,6 +81,7 @@ def stress_vs_relax():
     plt.savefig(
         "stress_vs_relax_base.pdf" if baseline_correction else "stress_vs_relax_abs.pdf"
     )
+    plt.legend().set_title("Stimulus")
 
 
 def math_vs_rotation(bw=0.2):
@@ -79,10 +90,26 @@ def math_vs_rotation(bw=0.2):
     plt.savefig(
         "math_vs_rotation_" + ("base" if baseline_correction else "abs") + ".pdf"
     )
+    plt.legend().set_title("Aufgabentyp")
+
+
+def stress_12():
+    compare_plot(
+        [1, 2],
+        phasen.repetition,
+        runs=[1, 2],
+        pre_condition=(phasen.trial_type == "stress"),
+    )
+    plt.legend().set_title("Wiederholung")
+    plt.title("Stress")
+    plt.savefig(
+        "stress_wiederholung_" + ("base" if baseline_correction else "abs") + ".pdf"
+    )
 
 
 if __name__ == "__main__":
     # stress_vs_relax()
     # plt.figure()
-    math_vs_rotation(bw=0.1)
+    # math_vs_rotation(bw=0.1)
+    # stress_12()
     plt.show()
