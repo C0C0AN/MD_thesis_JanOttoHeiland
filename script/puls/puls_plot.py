@@ -37,9 +37,9 @@ def select_cols(mask):
     return phasen_cols.isin(mask)
 
 
-def select(mask, run, puls=puls):
-    mask = mask & (phasen.run == run)
-    return puls.T[select_cols(mask)][run]
+def select(mask, run, puls=puls, phasen=phasen):
+    cols = mask & (phasen.run == run)
+    return puls.T[select_cols(cols)][run]
 
 
 def compare_data(
