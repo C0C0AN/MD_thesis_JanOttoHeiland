@@ -33,30 +33,31 @@ def load_data(file_name="puls_alles.tsv", baseline_correction=True):
             puls[c] -= pmean
 
 
-def select_cols(mask):
-    mask = phasen[mask].nr.tolist()
-    return phasen_cols.isin(mask)
-
-
 def select(mask, run):
     global puls, phasen
+
+    def select_cols(mask):
+        mask = phasen[mask].nr.tolist()
+        return phasen_cols.isin(mask)
+
     cols = mask & (phasen.run == run)
     return puls.T[select_cols(cols)][run]
 
 
 def compare_data(
-        compare, column, runs=[1, 2], pre_condition=None,
+    compare,
+    column,
+    runs=[1, 2],
+    pre_condition=None,
 ):
     global phasen
     if pre_condition is None:
-        pre_condition = (phasen.run > 0)
+        pre_condition = phasen.run > 0
     return pd.concat(
         [
             pd.concat(
                 [
-                    select(pre_condition & (column == t), run=r).melt(
-                        value_name="puls"
-                    )
+                    select(pre_condition & (column == t), run=r).melt(value_name="puls")
                     for t in compare
                 ],
                 keys=compare,
@@ -69,10 +70,12 @@ def compare_data(
     ).reset_index()
 
 
-def compare_plot(compare, column, runs=[1, 2], bw=0.2, pre_condition=None, ylim=(-20, 30)):
+def compare_plot(
+    compare, column, runs=[1, 2], bw=0.2, pre_condition=None, ylim=(-20, 30)
+):
     global phasen, baseline_correction
     if pre_condition is None:
-        pre_condition = (phasen.run > 0)
+        pre_condition = phasen.run > 0
     data = compare_data(compare, column, runs=runs, pre_condition=pre_condition)
     fig = sns.violinplot(
         y="puls", x="run", data=data, hue="trial", split=True, inner="quart", bw=bw
@@ -115,6 +118,7 @@ def wiederholung_12(trial_type="stress"):
         + ("base" if baseline_correction else "abs")
         + ".pdf"
     )
+
 
 if __name__ == "__main__":
     # stress_vs_relax()
