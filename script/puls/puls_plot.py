@@ -100,7 +100,7 @@ def compare_plot(
     return fig
 
 
-def stress_vs_relax(pre_condition=None):
+def stress_vs_relax(pre_condition=True):
     """Experiment 1: relax/stress Vergleich in den Phasen"""
     compare_plot(
         ["relax", "stress"],
@@ -229,7 +229,8 @@ if __name__ == "__main__":
     load_data("puls_alles.tsv", baseline_correction=baseline_correction)
     print("geladen")
 
-    # stress_vs_relax()
+    stress_vs_relax()
+    plt.figure()
     # plt.figure()
     # math_vs_rotation(bw=0.1)
     # plt.figure()
