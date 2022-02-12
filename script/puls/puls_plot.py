@@ -95,11 +95,18 @@ def compare_plot(
 
 def stress_vs_relax(pre_condition=None):
     """Experiment 1: relax/stress Vergleich in den Phasen"""
-    compare_plot(["relax", "stress"], phasen.trial_type, runs=[1, 2], pre_condition=pre_condition)
+    compare_plot(
+        ["relax", "stress"], phasen.trial_type, runs=[1, 2], pre_condition=pre_condition
+    )
     plt.savefig(
         "stress_vs_relax_" + ("base" if baseline_correction else "abs") + ".pdf"
     )
     plt.legend().set_title("Stimulus")
+
+
+def savefig(file_name):
+    global baseline_correction
+    plt.savefig(file_name + ("base" if baseline_correction else "abs") + ".pdf")
 
 
 def math_vs_rotation(bw=0.2):
@@ -141,12 +148,29 @@ def musik_vs_sound():
     def select_rows(mask, run, puls, phasen):
         return puls.loc[(run, mask), :]
 
+    def select_stress_rows(mask, run, puls, phasen):
+        phasen_mask = (phasen.trial_type == "stress") & (phasen.run == run)
+        stress_cols = phasen_cols.isin(phasen[phasen_mask].nr.tolist())
+        return puls.loc[(run, mask), stress_cols]
+
     compare_plot(
         ["Musik", "Sound"],
         prob_info.group,
         runs=[1, 2],
         select=select_rows,
     )
+    plt.title("Stress und Relax")
+    savefig("musik_vs_sound_all")
+    plt.figure()
+
+    compare_plot(
+        ["Musik", "Sound"],
+        prob_info.group,
+        runs=[1, 2],
+        select=select_stress_rows,
+    )
+    plt.title("Stress")
+    savefig("musik_vs_sound_stress")
 
 
 if __name__ == "__main__":
