@@ -20,16 +20,17 @@ def load_puls_alles(file_name="puls_alles.tsv"):
     return df
 
 
-baseline_correction = True
-phasen = load_runs()
-phasen = phasen[phasen.columns[:-2]].reset_index()
-df = load_puls_alles()
-phasen_cols = df.T[("", "phase")].dropna()
-puls = df.drop(columns=["age", "sex", "group"])[2:].sort_index()
-if baseline_correction:
-    pmean = puls.mean(axis=1)
-    for c in puls.columns:
-        puls[c] -= pmean
+def load_data(file_name="puls_alles.tsv", baseline_correction=True):
+    global phasen, puls, phasen_cols
+    phasen = load_runs()
+    phasen = phasen[phasen.columns[:-2]].reset_index()
+    df = load_puls_alles()
+    phasen_cols = df.T[("", "phase")].dropna()
+    puls = df.drop(columns=["age", "sex", "group"])[2:].sort_index()
+    if baseline_correction:
+        pmean = puls.mean(axis=1)
+        for c in puls.columns:
+            puls[c] -= pmean
 
 
 def select_cols(mask):
@@ -37,19 +38,23 @@ def select_cols(mask):
     return phasen_cols.isin(mask)
 
 
-def select(mask, run, puls=puls, phasen=phasen):
+def select(mask, run):
+    global puls, phasen
     cols = mask & (phasen.run == run)
     return puls.T[select_cols(cols)][run]
 
 
 def compare_data(
-    compare, column, runs=[1, 2], puls=puls, pre_condition=(phasen.run > 0)
+        compare, column, runs=[1, 2], pre_condition=None,
 ):
+    global phasen
+    if pre_condition is None:
+        pre_condition = (phasen.run > 0)
     return pd.concat(
         [
             pd.concat(
                 [
-                    select(pre_condition & (column == t), run=r, puls=puls).melt(
+                    select(pre_condition & (column == t), run=r).melt(
                         value_name="puls"
                     )
                     for t in compare
@@ -64,7 +69,10 @@ def compare_data(
     ).reset_index()
 
 
-def compare_plot(compare, column, runs=[1, 2], bw=0.2, pre_condition=(phasen.run > 0)):
+def compare_plot(compare, column, runs=[1, 2], bw=0.2, pre_condition=None):
+    global phasen, baseline_correction
+    if pre_condition is None:
+        pre_condition = (phasen.run > 0)
     data = compare_data(compare, column, runs=runs, pre_condition=pre_condition)
     fig = sns.violinplot(
         y="puls", x="run", data=data, hue="trial", split=True, inner="quart", bw=bw
@@ -74,10 +82,7 @@ def compare_plot(compare, column, runs=[1, 2], bw=0.2, pre_condition=(phasen.run
     return fig
 
 
-all_phasen = (phasen.run > 0)
-
-
-def stress_vs_relax(pre=all_phasen):
+def stress_vs_relax(pre=None):
     """Experiment 1: relax/stress Vergleich in den Phasen"""
     compare_plot(["relax", "stress"], phasen.trial_type, runs=[1, 2], pre_condition=pre)
     plt.savefig(
@@ -116,6 +121,8 @@ if __name__ == "__main__":
     # math_vs_rotation(bw=0.1)
     # wiederholung_12("stress")
     # wiederholung_12("relax")
+    baseline_correction = True
+    load_data("puls_alles.tsv", baseline_correction=baseline_correction)
 
     stress_vs_relax()
     plt.figure()
