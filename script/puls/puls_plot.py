@@ -23,7 +23,6 @@ def load_puls_alles(file_name="puls_alles.tsv"):
 baseline_correction = True
 phasen = load_runs()
 phasen = phasen[phasen.columns[:-2]].reset_index()
-
 df = load_puls_alles()
 df.drop(columns=["age", "sex", "group"], inplace=True)
 phasen_cols = df.T[("", "phase")].copy()
@@ -56,20 +55,34 @@ def compare_data(compare, column, runs=[1, 2], puls=puls):
     return pd.concat(data, keys=runs, names=["run"]).reset_index()
 
 
-def compare_plot(compare, column, runs=[1, 2]):
+def compare_plot(compare, column, runs=[1, 2], bw=0.2):
     data = compare_data(compare, column, runs=runs)
     fig = sns.violinplot(
-        y="puls", x="run", data=data, hue="trial", split=True, inner="quart", bw=0.2
+        y="puls", x="run", data=data, hue="trial", split=True, inner="quart", bw=bw
     )
+    plt.ylabel("Puls [bpm] baseline" if baseline_correction else "Puls [bpm]")
     plt.xlabel("Run")
     return fig
 
 
-if __name__ == "__main__":
-    # Experiment 1: relax/stress Vergleich in den Phasen
+def stress_vs_relax():
+    """Experiment 1: relax/stress Vergleich in den Phasen"""
     compare_plot(["relax", "stress"], phasen.trial_type, runs=[1, 2])
-    plt.ylabel("Puls [bpm] baseline" if baseline_correction else "Puls [bpm]")
     plt.savefig(
         "stress_vs_relax_base.pdf" if baseline_correction else "stress_vs_relax_abs.pdf"
     )
+
+
+def math_vs_rotation(bw=0.2):
+    """Experiment 2: Vergleiche math vs rotation."""
+    compare_plot(["math", "rotation"], phasen.condition, runs=[1, 2], bw=bw)
+    plt.savefig(
+        "math_vs_rotation_" + ("base" if baseline_correction else "abs") + ".pdf"
+    )
+
+
+if __name__ == "__main__":
+    # stress_vs_relax()
+    # plt.figure()
+    math_vs_rotation(bw=0.1)
     plt.show()
