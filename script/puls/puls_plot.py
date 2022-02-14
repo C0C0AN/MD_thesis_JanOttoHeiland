@@ -25,8 +25,8 @@ def load_data(file_name="puls_alles.tsv", baseline_correction=True):
     phasen = load_runs()
     phasen = phasen[phasen.columns[:-2]].reset_index()
     df = load_puls_alles()
-    phasen_cols = df.T[("", "phase")].dropna()
-    prob_info = df[["age", "sex", "group"]].copy().dropna().sort_index()
+    phasen_cols = df.T[("", "phase")].dropna().astype(int)
+    prob_info = df[["age", "sex", "group"]].dropna().sort_index()
     puls = df.drop(columns=["age", "sex", "group"])[2:].sort_index()
     if baseline_correction:
         pmean = puls.mean(axis=1)
