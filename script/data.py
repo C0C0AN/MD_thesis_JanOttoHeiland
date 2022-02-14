@@ -11,3 +11,4 @@ config = toml.load(config_toml)
 PREFIX = config["PREFIX"]
 HOAF_DIR = path.join(PREFIX, "HOAF")
 HOAF_BIDS = path.join(HOAF_DIR, "HOAF_BIDS")
+DATEN_DIR = config["DATEN"]

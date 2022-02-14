@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 from phases_analyze import load_phasen
+from data import DATEN_DIR
 
 
 def load_runs():
@@ -11,7 +12,7 @@ def load_runs():
     runs = runs.reset_index().set_index(["run", "nr"])
     return runs
 
-file_ma = '../../../Daten/physio_resp_pulse/physio_sub_version/sub_combined.ods'
+file_ma = DATEN_DIR + '/physio_resp_pulse/physio_sub_version/sub_combined.ods'
 df = pd.read_excel(file_ma)
 # df = df.round(0).astype(int)
 df = df[[c for c in df.columns if not c.startswith("Mittelwert")]]
