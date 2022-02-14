@@ -101,7 +101,7 @@ def compare_plot(
 
 
 def stress_vs_relax(pre_condition=True):
-    """Experiment 1: relax/stress Vergleich in den Phasen"""
+    """Experiment 1: relax/stress Vergleich in den Phasen."""
     compare_plot(
         ["relax", "stress"],
         phasen.trial_type,
@@ -109,24 +109,19 @@ def stress_vs_relax(pre_condition=True):
         pre_condition=pre_condition,
         file_name="stress_vs_relax.tsv",
     )
-    plt.savefig(
-        "stress_vs_relax_" + ("base" if baseline_correction else "abs") + ".pdf"
-    )
     plt.legend().set_title("Stimulus")
+    savefig("stress_vs_relax")
 
 
 def savefig(file_name):
     global baseline_correction
-    plt.savefig(file_name + ("base" if baseline_correction else "abs") + ".pdf")
+    plt.savefig(file_name + ("_base" if baseline_correction else "_abs") + ".pdf")
 
 
 def math_vs_rotation(bw=0.2):
     """Experiment 2: Vergleiche math vs rotation."""
     compare_plot(["math", "rotation"], phasen.condition, runs=[1, 2], bw=bw)
-    plt.savefig(
-        "math_vs_rotation_" + ("base" if baseline_correction else "abs") + ".pdf"
-    )
-    plt.legend().set_title("Aufgabentyp")
+    savefig("math_vs_rotation")
 
 
 def wiederholung_12(trial_type="stress"):
@@ -138,11 +133,7 @@ def wiederholung_12(trial_type="stress"):
     )
     plt.legend().set_title("Wiederholung")
     plt.title(trial_type.capitalize())
-    plt.savefig(
-        f"{trial_type}_wiederholung_"
-        + ("base" if baseline_correction else "abs")
-        + ".pdf"
-    )
+    savefig(f"{trial_type}_wiederholung")
 
 
 def stress_vs_relax_unterplots():
