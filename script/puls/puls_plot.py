@@ -157,44 +157,32 @@ def stress_vs_relax_unterplots():
 
 
 def musik_vs_sound():
-    compare_plot(
-        ["Musik", "Sound"],
-        prob_info.group,
-        runs=[1, 2],
-        select=select_rows,
-    )
+    def plot(pre_condition, file_name=None):
+        plt.figure()
+        compare_plot(
+            ["Musik", "Sound"],
+            prob_info.group,
+            runs=[1, 2],
+            select=select_rows,
+            pre_condition=pre_condition,
+        )
+
+    plot(pre_condition=True)
     plt.title("Gesamte Zeit inklusive Pausen")
     savefig("musik_vs_sound_all")
 
-    plt.figure()
-    compare_plot(
-        ["Musik", "Sound"],
-        prob_info.group,
-        runs=[1, 2],
-        select=select_rows,
-        pre_condition=(phasen.run > 0),
-    )
+    plot(pre_condition=(phasen.run > 0))
     plt.title("Gesamte Zeit ohne Pausen")
     savefig("musik_vs_sound_both")
 
-    plt.figure()
-    compare_plot(
-        ["Musik", "Sound"],
-        prob_info.group,
-        runs=[1, 2],
-        select=select_rows,
+    plot(
         pre_condition=(phasen.trial_type == "stress"),
         file_name="musik_vs_sound_under_stress.tsv",
     )
     plt.title("Stress")
     savefig("musik_vs_sound_stress")
 
-    plt.figure()
-    compare_plot(
-        ["Musik", "Sound"],
-        prob_info.group,
-        runs=[1, 2],
-        select=select_rows,
+    plot(
         pre_condition=(phasen.trial_type == "relax"),
         file_name="musik_vs_sound_under_relex.tsv",
     )
@@ -221,7 +209,6 @@ if __name__ == "__main__":
     print("geladen")
 
     stress_vs_relax()
-    plt.figure()
     # plt.figure()
     # math_vs_rotation(bw=0.1)
     # plt.figure()
