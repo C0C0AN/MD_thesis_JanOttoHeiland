@@ -40,6 +40,16 @@ def select_cols(mask, pre_condition, run, puls, phasen):
     return puls.loc[(run, slice(None)), col_mask]
 
 
+def select_rows(mask, pre_condition, run, puls, phasen):
+    """Wie `select_cols`, nur dass Zeilen ausgewaelt werden.
+
+    `pre_condition` wählt Spalten aus.
+    """
+    phasen_mask = pre_condition & (phasen.run == run)
+    col_mask = phasen_cols.isin(phasen[phasen_mask].nr.tolist())
+    return puls.loc[(run, mask), col_mask]
+
+
 def compare_data(
     compare,
     criteria,
@@ -100,6 +110,11 @@ def compare_plot(
     return fig
 
 
+def savefig(file_name):
+    global baseline_correction
+    plt.savefig(file_name + ("_base" if baseline_correction else "_abs") + ".pdf")
+
+
 def stress_vs_relax(pre_condition=True):
     """Experiment 1: relax/stress Vergleich in den Phasen."""
     compare_plot(
@@ -111,11 +126,6 @@ def stress_vs_relax(pre_condition=True):
     )
     plt.legend().set_title("Stimulus")
     savefig("stress_vs_relax")
-
-
-def savefig(file_name):
-    global baseline_correction
-    plt.savefig(file_name + ("_base" if baseline_correction else "_abs") + ".pdf")
 
 
 def math_vs_rotation(bw=0.2):
@@ -144,16 +154,6 @@ def stress_vs_relax_unterplots():
     plt.figure()
     stress_vs_relax(pre_condition=(phasen.condition == "rotation"))
     plt.title("Aufgabe: Rotation")
-
-
-def select_rows(mask, pre_condition, run, puls, phasen):
-    """Wie `select_cols`, nur dass Zeilen ausgewaelt werden.
-
-    `pre_condition` wählt Spalten aus.
-    """
-    phasen_mask = pre_condition & (phasen.run == run)
-    col_mask = phasen_cols.isin(phasen[phasen_mask].nr.tolist())
-    return puls.loc[(run, mask), col_mask]
 
 
 def musik_vs_sound():
