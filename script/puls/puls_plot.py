@@ -130,7 +130,7 @@ def stress_vs_relax(pre_condition=True):
 
 def math_vs_rotation(bw=0.2):
     """Experiment 2: Vergleiche math vs rotation."""
-    compare_plot(["math", "rotation"], phasen.condition, runs=[1, 2], bw=bw)
+    compare_plot(["math", "rotation"], phasen.condition, runs=[1, 2], bw=bw, file_name="math_vs_rotation.tsv")
     savefig("math_vs_rotation")
 
 
@@ -140,6 +140,7 @@ def wiederholung_12(trial_type="stress"):
         phasen.repetition,
         runs=[1, 2],
         pre_condition=(phasen.trial_type == trial_type),
+        file_name="stress_wiederholung.tsv"
     )
     plt.legend().set_title("Wiederholung")
     plt.title(trial_type.capitalize())
@@ -165,6 +166,7 @@ def musik_vs_sound():
             runs=[1, 2],
             select=select_rows,
             pre_condition=pre_condition,
+            file_name="musik_vs_sound.tsv"            
         )
 
     plot(pre_condition=True)
@@ -209,12 +211,15 @@ if __name__ == "__main__":
     print("geladen")
 
     stress_vs_relax()
-    # plt.figure()
-    # math_vs_rotation(bw=0.1)
-    # plt.figure()
-    # wiederholung_12("stress")
-    # wiederholung_12("relax")
-    # stress_vs_relax_unterplots()
-
+    plt.figure()
+    math_vs_rotation(bw=0.1)
+    plt.figure()
+    wiederholung_12("stress")
+    plt.figure()
+    wiederholung_12("relax")
+    plt.figure()
+    stress_vs_relax_unterplots()
+    plt.figure()
     musik_vs_sound()
+    plt.figure()
     plt.show()
