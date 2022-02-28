@@ -63,3 +63,25 @@ if __name__ == "__main__":
     lf = df.melt(id_vars=idvars, value_name="puls", var_name="time_point")
     lf["phase"] = phase.cat.codes[lf.time_point].values
     lf.age = lf.age.astype(int)
+    runs.append(
+        {
+            "run": 1,
+            "nr": -1,
+            "repetition": 0,
+            "condition": "pause",
+            "trial_type": "pause",
+        },
+        ignore_index=True,
+        inplace=True,
+    )
+    runs.append(
+        {
+            "run": 2,
+            "nr": -1,
+            "repetition": 0,
+            "condition": "pause",
+            "trial_type": "pause",
+        },
+        ignore_index=True,
+        inplace=True,
+    )
