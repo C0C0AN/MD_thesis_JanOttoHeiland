@@ -57,3 +57,9 @@ if __name__ == "__main__":
     df.reset_index().to_csv(
         "puls_alles.tsv", sep="\t", float_format="%.02f", index=False
     )
+    df.reset_index(inplace=True)
+    df.drop([0, 1], inplace=True)
+    idvars = [c for c in df.columns if not isinstance(c, int)]
+    lf = df.melt(id_vars=idvars, value_name="puls", var_name="time_point")
+    lf["phase"] = phase.cat.codes[lf.time_point].values
+    lf.age = lf.age.astype(int)
