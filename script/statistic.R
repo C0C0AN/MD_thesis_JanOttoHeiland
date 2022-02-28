@@ -13,17 +13,8 @@ library(ggpubr) # for graphical test of normality
 library(emmeans) # for post-hoc tests
 
 # anova -------------------------------------------------------------------
-
-#in order read restructured data again, in case you're only working with that dataset, uncomment the following: 
-
-# d_long <- read_csv("pulse_reformatted.csv",  # exchange for your own path to the datafile 
-#                              col_types = cols(run = col_factor(levels = c("1", 
-#                                                                           "2")), phase = col_factor(levels = c("-1.00", 
-#                                                                                                                "0.00", "1.00", "2.00", "3.00", "4.00", 
-#                                                                                                                "5.00", "6.00", "7.00")), group = col_factor(levels = c("Musik", 
-#                                                                                                                                                                        "Sound")), sex = col_factor(levels = c("F", 
-#                                                                                                                                                                                                               "M"))))
-#
+d_long <- read.csv("puls/puls_long.tsv", sep="\t")
+names(d_long)[names(d_long) == "puls"] <- "pulse"
 
 #### test assumptions
 
