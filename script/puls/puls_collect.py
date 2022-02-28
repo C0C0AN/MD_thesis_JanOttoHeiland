@@ -63,25 +63,25 @@ if __name__ == "__main__":
     lf = df.melt(id_vars=idvars, value_name="puls", var_name="time_point")
     lf["phase"] = phase.cat.codes[lf.time_point].values
     lf.age = lf.age.astype(int)
-    runs.append(
-        {
-            "run": 1,
-            "nr": -1,
-            "repetition": 0,
-            "condition": "pause",
-            "trial_type": "pause",
-        },
-        ignore_index=True,
-        inplace=True,
+    runs.reset_index(inplace=True)
+    rows = pd.DataFrame(
+        data={
+            "run": [1, 2],
+            "nr": [-1, -1],
+            "repetition": [0, 0],
+            "condition": ["pause", "pause"],
+            "trial_type": ["pause", "pause"],
+        }
     )
-    runs.append(
-        {
-            "run": 2,
-            "nr": -1,
-            "repetition": 0,
-            "condition": "pause",
-            "trial_type": "pause",
-        },
-        ignore_index=True,
-        inplace=True,
-    )
+    runs = pd.concat([runs, rows])
+    runs["run_phase"] = runs.nr + (runs.run - 1) * 8
+    runs.loc[runs.nr == -1, "run_phase"] = -1
+    lf["run_phase"] = lf["run"] * 8 + lf["phase"] - 8
+    lf.loc[lf.phase == -1, "run_phase"] = -1
+    runs = runs.iloc[:-1, :]
+    runs = runs[["run_phase", "repetition", "trial_type", "condition"]]
+    runs = runs.set_index("run_phase")
+    lf = lf.join(runs, on="run_phase")
+    for col in ["run", "age", "run_phase"]:
+        lf[col] = lf[col].astype(int)
+    lf.to_csv("puls_long.tsv", sep="\t", float_format="%0.2f", index=False)
