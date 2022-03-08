@@ -15,6 +15,8 @@ from scipy.stats import zscore
 from blocks import load_blocks
 from resp import raw_vhdr
 
+DATEN = "../../../Daten"
+
 
 def load_eda(fname, verbose=True):
     """Return arrays data, times, and raw."""
@@ -73,7 +75,7 @@ if __name__ == "__main__":
         """
         s = 50000
         rs = 1
-        filenames = [path.join("../../Daten/BekJan/", f) for f in load_blocks().index]
+        filenames = [path.join(DATEN + "/BekJan/", f) for f in load_blocks().index]
 
         ls = compute_reduced_eda(s, filenames)
         for (times, data) in ls:
@@ -86,7 +88,7 @@ if __name__ == "__main__":
             plt.xlabel("Zeit(s)")
             plt.ylabel("EDA(S)", labelpad=25)
     else:
-        fname = "../../Daten/BekJan/HOAF_16.vhdr"
+        fname = DATEN + "/BekJan/HOAF_16.vhdr"
         times, data, _ = load_eda(fname)
         """
         Plot bei dem nochmal 1000000 Datenpunkte in einem Daenpunkt zusammen gefasst werden 
@@ -101,7 +103,7 @@ if __name__ == "__main__":
 
 
 def _test_it_16():
-    fname = "../../Daten/BekJan/HOAF_16.vhdr"
+    fname = DATEN + "/BekJan/HOAF_16.vhdr"
     data, times, _ = load_eda(fname)
     plt.plot(times, data)
     plt.show()
@@ -109,7 +111,7 @@ def _test_it_16():
 
 def _test_it_29():
     s = 50000
-    fname = "../../Daten/BekJan/HOAF_29.vhdr"
+    fname = DATEN + "/BekJan/HOAF_29.vhdr"
     data, times, _ = load_eda(fname)
     data, times = reduce_mean(times, size=s), reduce_mean(data, size=s)
     plt.plot(pd.Series(data).rolling(rs).mean(), times)
