@@ -45,7 +45,7 @@ def reduce_mean(a, size=1000):
     return a.mean(axis=1)
 
 
-def compute_reduced_eda(size, filenames, backup="reduced_eda.pickle"):
+def compute_reduced_eda(size, filenames, backup="reduced_eda"):
     """Reduziere Datenpunkte.
 
     Diese Methode schreibt den lange dauernden Schritt, nämlich das Auslesen der
@@ -53,6 +53,7 @@ def compute_reduced_eda(size, filenames, backup="reduced_eda.pickle"):
     den Prozess zu beschleunigen (pickle ist das python modul dafür)
     """
     ls = []
+    backup = f"{backup}_{size}.pickle"
     if path.exists(backup):
         with open(backup, "rb") as io:
             return pickle.load(io)

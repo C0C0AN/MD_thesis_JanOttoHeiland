@@ -78,9 +78,7 @@ def get_blocktimes(fname, delta=1.5, show_raw=False, filter=False):
 
 
 def load_blocks(csv_file=BLOCKS_CSV):
-    """
-    Lade Informationen über Blocklängen in DataFrame.
-    """
+    """Lade Informationen über Blocklängen in DataFrame."""
     return pd.read_csv(csv_file, index_col=0, header=None)
 
 
