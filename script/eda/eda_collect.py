@@ -18,7 +18,7 @@ def index_prob_id(blocks):
 
 
 def _vhdr_filename(prob_id):
-    return f"{DATEN}/BekJan/HOAF_{prob_id}.vhdr"
+    return f"{DATEN}/BekJan/HOAF_{prob_id:02d}.vhdr"
 
 
 def load_reduced_eda(prob_ids) -> list[tuple[np.ndarray, np.ndarray]]:
