@@ -45,7 +45,7 @@ def reduce_mean(a, size=1000):
     return a.mean(axis=1)
 
 
-def compute_reduced_eda(s, filenames, backup="reduced_eda.pickle"):
+def compute_reduced_eda(size, filenames, backup="reduced_eda.pickle"):
     """Reduziere Datenpunkte.
 
     Diese Methode schreibt den lange dauernden Schritt, nämlich das Auslesen der
@@ -61,7 +61,7 @@ def compute_reduced_eda(s, filenames, backup="reduced_eda.pickle"):
         for filepath in filenames:
             data, times, _ = load_eda(filepath)
             ls.append(
-                (reduce_mean(times, size=s), reduce_mean(data, size=s))
+                (reduce_mean(times, size=size), reduce_mean(data, size=size))
             )  # reduced mean(um die Datenpunkte zu minimieren)
         with open(backup, "wb") as io:
             pickle.dump(ls, io)
@@ -74,18 +74,18 @@ if __name__ == "__main__":
         """
         s kann flexibel angepasst werden jenachdem wieviele Datenpunkte wir darstellen wollen
         """
-        s = 50000
+        size = 50000
         rs = 1
         filenames = [path.join(DATEN + "/BekJan/", f) for f in load_blocks().index]
 
-        ls = compute_reduced_eda(s, filenames)
+        ls = compute_reduced_eda(size, filenames)
         for (times, data) in ls:
             """
             würde man vor data noch zscore setzten, dann kann man sich die Abweichungen vom Mittelwert, bzw der Std darstellen
             rolling (moving average): Glätten der Daten durch Vergleich mit den Nachbardaten
             """
             plt.plot(times, pd.Series(data).rolling(rs).mean())
-            plt.title("alle Probanden EDA" + " s=" + str(s) + " rs=" + str(rs))
+            plt.title("alle Probanden EDA" + " s=" + str(size) + " rs=" + str(rs))
             plt.xlabel("Zeit(s)")
             plt.ylabel("EDA(S)", labelpad=25)
     else:
@@ -94,9 +94,9 @@ if __name__ == "__main__":
         """
         Plot bei dem nochmal 1000000 Datenpunkte in einem Daenpunkt zusammen gefasst werden 
         """
-        s = 100000
-        plt.title(path.basename(fname) + "s=" + str(s))
-        rdata, rtimes = reduce_mean(times, size=s), reduce_mean(data, size=s)
+        size = 100000
+        plt.title(path.basename(fname) + "s=" + str(size))
+        rdata, rtimes = reduce_mean(times, size=size), reduce_mean(data, size=size)
         plt.plot(rtimes, zscore(rdata))
         # matrix = np.array(ls)
         # dmatrix = pd.DataFrame(matrix)
