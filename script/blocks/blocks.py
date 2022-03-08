@@ -1,17 +1,15 @@
 # coding: utf-8
-"""
-Find the Response blocks.
-"""
-from resp import load_vhdr
+"""Find the Response blocks."""
+import warnings
+from os import path
+
 import matplotlib.pyplot as plt
 import numpy as np
-from resp import find_vhdrs
 import pandas as pd
-from os import path
-import warnings
-
+from resp import find_vhdrs, load_vhdr
 
 RESPONSE = "Response/R128"
+BLOCKS_CSV = path.join(path.dirname(path.realpath(__file__)), "blocks.csv")
 
 
 def plot_block_hist(ann):
@@ -79,7 +77,7 @@ def get_blocktimes(fname, delta=1.5, show_raw=False, filter=False):
     return blocks
 
 
-def load_blocks(csv_file="blocks.csv"):
+def load_blocks(csv_file=BLOCKS_CSV):
     """
     Lade Informationen über Blocklängen in DataFrame.
     """
