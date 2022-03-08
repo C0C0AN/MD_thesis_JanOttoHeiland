@@ -46,9 +46,10 @@ def reduce_mean(a, size=1000):
 
 
 def compute_reduced_eda(s, filenames, backup="reduced_eda.pickle"):
-    """
-    diese Methode schreibt den lange dauernden Schritt, nämlich das auslesen der
-    Datenpunkte und erstellen der Liste auf dei Festplatte um bei erneutem Aufrufen
+    """Reduziere Datenpunkte.
+
+    Diese Methode schreibt den lange dauernden Schritt, nämlich das Auslesen der
+    Datenpunkte und Erstellen der Liste auf die Festplatte, um bei erneutem Aufrufen
     den Prozess zu beschleunigen (pickle ist das python modul dafür)
     """
     ls = []
