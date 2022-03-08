@@ -1,10 +1,9 @@
 """Sammel EDA Daten und schreibe es in CSV Datei."""
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
 from blocks import load_blocks
-from show_eda import DATEN, compute_reduced_eda, load_eda
+from show_eda import DATEN, compute_reduced_eda
 
 
 def index_prob_id(blocks):
