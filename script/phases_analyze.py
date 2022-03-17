@@ -8,7 +8,6 @@ def load_phasen(file_name="phasen.tsv", means=True):
     pf = pf.sort_values(["prob_nr", "run", "start"])
     if means:
         return pf.groupby(level=[1, 2, 3, 4], sort=False).mean()
-    """errechnen des Mittelwertes über alle Proband*innen hinweg"""
     return pf
 
 
