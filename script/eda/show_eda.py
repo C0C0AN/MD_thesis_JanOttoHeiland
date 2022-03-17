@@ -35,7 +35,7 @@ def load_eda(fname, verbose=True):
 def reduce_mean(a, size=1000):
     """
     size gibt an wieviele Datenpunkte in einem Datenpunkt zusammen gefasst werden
-    Da über 19 Millionen Datenpunkte vorlagen ,a = a.reshape(-1, size) : Anordnung des Arrays sodass 1000 SPalten haben
+    Da über 19 Millionen Datenpunkte vorlagen ,a = a.reshape(-1, size) : Anordnung   des Arrays sodass 1000 SPalten haben
     dann kann der Mittelwert einer Zeile über die 1000 Spalten gebildet werden
     """
     rest = len(a) % size
@@ -53,7 +53,8 @@ def compute_reduced_eda(size, filenames, backup="reduced_eda"):
     den Prozess zu beschleunigen (pickle ist das python modul dafür)
     """
     ls = []
-    backup = f"{backup}_{size}.pickle"
+    # backup = f"{backup}_{size}.pickle"
+    backup = "{backup}_{size}.pickle"
     if path.exists(backup):
         with open(backup, "rb") as io:
             return pickle.load(io)
