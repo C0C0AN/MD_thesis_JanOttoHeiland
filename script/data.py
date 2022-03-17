@@ -10,9 +10,9 @@ if not path.exists(config_toml):
     config_toml = path.join(config_dir, "config.example.toml")
 config = toml.load(config_toml)
 
+
 PREFIX = config["PREFIX"]
 if not path.isabs(PREFIX):
-    # Bei einem relativen Pfad: füge das Konfigurationsverzeichnis vorne dran
     PREFIX = path.join(config_dir, PREFIX)
 HOAF_DIR = path.join(PREFIX, "HOAF")
 HOAF_BIDS = path.join(HOAF_DIR, "HOAF_BIDS")
