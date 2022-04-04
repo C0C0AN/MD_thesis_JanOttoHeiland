@@ -65,5 +65,4 @@ if __name__ == "__main__":
 
     blocks = index_prob_id(bs)
     lf = eda_long(blocks)
-    lf.eda *= 1e6
-    lf.to_csv("eda_long.tsv", sep="\t", float_format="%07.4f", index=False)
+    lf.to_csv("eda_long.tsv", sep="\t", float_format="%9.7f", index=False)
