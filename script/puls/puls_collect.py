@@ -13,6 +13,14 @@ def load_runs():
     return runs
 
 
+def run_intervals(runs=None):
+    runs = runs or load_runs()
+    # mittlere Start- und End-Zeiten der Phasen
+    run = runs.groupby("nr").mean()
+    run.repetition = run.repetition.astype(int)
+    return pd.IntervalIndex.from_arrays(run.start, run.end)
+
+
 if __name__ == "__main__":
     file_ma = DATEN_DIR + "/physio_resp_pulse/physio_sub_version/sub_combined.ods"
     df = pd.read_excel(file_ma)
@@ -26,10 +34,7 @@ if __name__ == "__main__":
     df["time"] = [i * 1.45 for i in df.index]
 
     runs = load_runs()
-    run = runs.groupby("nr").mean()
-    run.repetition = run.repetition.astype(int)
-
-    intervals = pd.IntervalIndex.from_arrays(run.start, run.end)
+    intervals = run_intervals(runs)
     phase = pd.cut(df.time, intervals, labels=False)
     df["phase"] = phase.cat.codes
 
