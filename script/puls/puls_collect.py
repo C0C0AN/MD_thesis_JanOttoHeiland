@@ -21,6 +21,21 @@ def run_intervals(runs=None):
     return pd.IntervalIndex.from_arrays(run.start, run.end)
 
 
+def load_group_info():
+    """Lade Gruppezugehoerigkeit."""
+    from data import HOAF_BIDS
+    from os import path
+
+    prob = pd.read_csv(path.join(HOAF_BIDS, "participants.tsv"), sep="\t")
+    prob["prob_nr"] = prob.participant_id.str.extract(r"sub-(.+)").astype(int)
+    prob = prob.set_index("prob_nr")
+    prob = prob.dropna()
+    prob = prob.drop(columns=["participant_id"])
+    extra = pd.concat((prob, prob), keys=[1, 2])
+    extra.index.set_names(["run", "prob_nr"])
+    return extra
+
+
 if __name__ == "__main__":
     file_ma = DATEN_DIR + "/physio_resp_pulse/physio_sub_version/sub_combined.ods"
     df = pd.read_excel(file_ma)
@@ -44,17 +59,7 @@ if __name__ == "__main__":
     df = df.reindex(columns=idx)
     df.to_csv("puls_phasen.tsv", sep="\t", float_format="%.02f")
 
-    # Lade Gruppezugehoerigkeit
-    from data import HOAF_BIDS
-    from os import path
-
-    prob = pd.read_csv(path.join(HOAF_BIDS, "participants.tsv"), sep="\t")
-    prob["prob_nr"] = prob.participant_id.str.extract(r"sub-(.+)").astype(int)
-    prob = prob.set_index("prob_nr")
-    prob = prob.dropna()
-    prob = prob.drop(columns=["participant_id"])
-    extra = pd.concat((prob, prob), keys=[1, 2])
-    extra.index.set_names(["run", "prob_nr"])
+    extra = load_group_info()
 
     df = df.reorder_levels(["run", "prob_nr"], axis=1)
     df = df.T
