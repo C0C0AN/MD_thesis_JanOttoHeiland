@@ -32,7 +32,7 @@ def load_group_info():
     prob = prob.dropna()
     prob = prob.drop(columns=["participant_id"])
     extra = pd.concat((prob, prob), keys=[1, 2])
-    extra.index.set_names(["run", "prob_nr"])
+    extra.index.set_names(["run", "prob_nr"], inplace=True)
     return extra
 
 
