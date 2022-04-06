@@ -39,14 +39,28 @@ if __name__ == "__main__":
 
     runs = load_runs()
     runs.reset_index(inplace=True)
+    rows = pd.DataFrame(
+        data={
+            "run": [1, 2],
+            "nr": [-1, -1],
+            "repetition": [0, 0],
+            "condition": ["pause", "pause"],
+            "trial_type": ["pause", "pause"],
+        }
+    )
+    runs = pd.concat([rows, runs])
     runs = runs[["run", "nr", "repetition", "trial_type", "condition"]]
     runs = runs.rename(columns={"nr": "phase"})
+    runs = runs.sort_values(["run", "phase"]).reset_index()
     runs = runs.set_index(["run", "phase"])
+
     lf = df.join(runs, on=["run", "phase"])
     lf.repetition = lf.repetition.fillna(-1).astype(int)
-    lf.dropna(inplace=True)
 
     extra = load_group_info()
     extra.index.set_names(["run", "prob_id"], inplace=True)
     mf = lf.join(extra, on=["run", "prob_id"])
+    mf.drop(columns=["block"], inplace=True)
+    mf.sort_values(["run", "time", "prob_id"], inplace=True)
+    mf.dropna(inplace=True)
     mf.to_csv("eda_complete.tsv", sep="\t", index=False)
