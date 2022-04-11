@@ -30,4 +30,5 @@ if __name__ == "__main__":
     df.loc[df.block == 5, "run"] = 2
 
     mf = combine(df)
+    mf.drop(columns=["block"], inplace=True)
     mf.to_csv("eda_complete.tsv", sep="\t", index=False)

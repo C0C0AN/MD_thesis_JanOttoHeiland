@@ -28,7 +28,10 @@ def load_group_info():
 
 
 def load_runs():
-    runs = load_phasen("../phasen.tsv")
+    from os import path
+
+    phasen_tsv = path.join(path.realpath(path.dirname(__file__)), "phasen.tsv")
+    runs = load_phasen(phasen_tsv)
     runs["nr"] = list(range(8)) + list(range(8))
     runs = runs.reset_index().set_index(["run", "nr"])
     return runs
@@ -76,7 +79,6 @@ def combine(df):
     extra = load_group_info()
     extra.index.set_names(["run", "prob_id"], inplace=True)
     mf = lf.join(extra, on=["run", "prob_id"])
-    mf.drop(columns=["block"], inplace=True)
     mf.sort_values(["run", "time", "prob_id"], inplace=True)
     mf.dropna(inplace=True)
     return mf
