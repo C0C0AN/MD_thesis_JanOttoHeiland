@@ -3,7 +3,7 @@ from os import path
 
 import pandas as pd
 
-from collect import combine
+from collect import combine, baseline_correction
 from data import HOAF_BIDS
 
 
@@ -31,3 +31,5 @@ if __name__ == "__main__":
     mf = combine(df)
     mf["resp"] *= 60
     mf.to_csv("resp_long.tsv", sep="\t", index=False, float_format="%6.2f")
+    bf = baseline_correction(mf, "resp")
+    bf.to_csv("resp_long_baseline.tsv", sep="\t", index=False, float_format="%6.2f")
