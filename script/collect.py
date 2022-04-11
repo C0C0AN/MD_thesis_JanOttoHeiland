@@ -80,5 +80,8 @@ def combine(df):
     extra.index.set_names(["run", "prob_id"], inplace=True)
     mf = lf.join(extra, on=["run", "prob_id"])
     mf.sort_values(["run", "time", "prob_id"], inplace=True)
+    if "index" in mf.columns:
+        mf.drop(columns=["index"], inplace=True)
     mf.dropna(inplace=True)
+    mf = mf.astype({"age": int, "repetition": int, "phase": int})
     return mf

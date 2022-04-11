@@ -3,7 +3,7 @@ from os import path
 
 import pandas as pd
 
-from collect import load_group_info, load_runs, run_intervals
+from collect import combine
 from data import HOAF_BIDS
 
 
@@ -28,3 +28,6 @@ def concat_all_csvs(RESP_DIR = f"{HOAF_BIDS}/derivatives/physio/resp"):
 
 if __name__ == "__main__":
     df = concat_all_csvs()
+    mf = combine(df)
+    mf["resp"] *= 60
+    mf.to_csv("resp_long.tsv", sep="\t", index=False, float_format="%6.2f")
