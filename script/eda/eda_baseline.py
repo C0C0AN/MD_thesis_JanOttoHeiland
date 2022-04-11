@@ -1,15 +1,7 @@
 """Ziehe den Mittelwert pro Proband ab in den EDA Daten."""
 import pandas as pd
 
-
-def baseline_correction(df, column):
-    probanden = df["prob_id"].unique()
-    for i in probanden:
-        mask = df["prob_id"] == i
-        df.loc[mask, column] -= df.loc[mask, column].mean()
-    df = df.astype({"age": int})
-    return df
-
+from collect import baseline_correction
 
 if __name__ == "__main__":
     df = pd.read_csv("eda_complete.tsv", sep="\t")

@@ -30,7 +30,7 @@ def load_group_info():
 def load_runs():
     from os import path
 
-    phasen_tsv = path.join(path.realpath(path.dirname(__file__)), "phasen.tsv")
+    phasen_tsv = path.join(path.dirname(path.realpath(__file__)), "phasen.tsv")
     runs = load_phasen(phasen_tsv)
     runs["nr"] = list(range(8)) + list(range(8))
     runs = runs.reset_index().set_index(["run", "nr"])
@@ -85,3 +85,13 @@ def combine(df):
     mf.dropna(inplace=True)
     mf = mf.astype({"age": int, "repetition": int, "phase": int})
     return mf
+
+
+def baseline_correction(df, column):
+    """Ziehe in Spalte `column` pro Proband den Mittelwert ab."""
+    probanden = df["prob_id"].unique()
+    for i in probanden:
+        mask = df["prob_id"] == i
+        df.loc[mask, column] -= df.loc[mask, column].mean()
+    df = df.astype({"age": int})
+    return df
