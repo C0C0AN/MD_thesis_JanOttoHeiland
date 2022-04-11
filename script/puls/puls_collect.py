@@ -4,7 +4,7 @@ import pandas as pd
 
 from collect import load_group_info
 from data import DATEN_DIR
-from phases_analyze import load_phasen
+from collect import load_phasen
 
 
 def load_runs():
