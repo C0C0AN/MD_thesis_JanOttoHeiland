@@ -2,25 +2,8 @@
 """Suche alle Informationen ueber die Pulsdaten zusammen und schreibe sie nach `puls_alles.tsv`."""
 import pandas as pd
 
-from collect import load_group_info
+from collect import load_group_info, load_runs, run_intervals
 from data import DATEN_DIR
-from collect import load_phasen
-
-
-def load_runs():
-    runs = load_phasen("../phasen.tsv")
-    runs["nr"] = list(range(8)) + list(range(8))
-    runs = runs.reset_index().set_index(["run", "nr"])
-    return runs
-
-
-def run_intervals(runs=None):
-    runs = runs or load_runs()
-    # mittlere Start- und End-Zeiten der Phasen
-    run = runs.groupby("nr").mean()
-    run.repetition = run.repetition.astype(int)
-    return pd.IntervalIndex.from_arrays(run.start, run.end)
-
 
 if __name__ == "__main__":
     file_ma = DATEN_DIR + "/physio_resp_pulse/physio_sub_version/sub_combined.ods"
