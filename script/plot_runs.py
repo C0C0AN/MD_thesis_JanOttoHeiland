@@ -60,6 +60,7 @@ if __name__ == "__main__":
     p.add_argument(
         "-o", "--out", type=str, default=None, help="Speichere die Abbildung in OUT"
     )
+    p.add_argument("-z", "--zscore", action="store_true", help="Plot Z-Score.")
     args = p.parse_args()
 
     df = pd.read_csv(args.data, sep="\t")
@@ -71,6 +72,11 @@ if __name__ == "__main__":
 
     if not args.no_baseline:
         df = baseline_correction(df, column=args.values)
+    if args.zscore:
+        for i in df["prob_id"].unique():
+            mask = df["prob_id"] == i
+            df.loc[mask, args.values] /= df.loc[mask, args.values].std()
+
     tf = df[["time", args.values, "prob_id", "run"]].copy()
     plot_runs(tf, top_xaxis=args.top_xaxis, values=args.values, ylabel=args.yaxis)
     if args.out:
