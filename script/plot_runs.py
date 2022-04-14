@@ -2,7 +2,15 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 from os import path
-from collect import baseline_correction
+from collect import baseline_correction, load_phasen
+
+
+def plot_phases(colors=["0.3", "0.9"], alpha=0.06, ax=plt):
+    """Stress und Entspannungsphasen des Experiments."""
+    pf = load_phasen()
+    phases = 0.5 * (pf.loc[1].values + pf.loc[2].values)
+    for i, phase in enumerate(phases):
+        ax.axvspan(phase[0], phase[1], facecolor=colors[i % 2], alpha=alpha)
 
 
 def plot_runs(tf, ylabel="Puls [BPM]", top_xaxis=False, values="puls"):
@@ -25,6 +33,7 @@ def plot_runs(tf, ylabel="Puls [BPM]", top_xaxis=False, values="puls"):
         ax.set_ylabel(ylabel)
         ax.set_ylim(vmin, vmax)
         ax.set_xlim(tf["time"].min(), tf["time"].max())
+        plot_phases(ax=ax, colors=["green", "green"])
     plt.xlabel("time [sec]")
 
 
