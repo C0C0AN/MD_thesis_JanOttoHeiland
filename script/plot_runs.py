@@ -20,10 +20,11 @@ def plot_runs(tf, ylabel="Puls [BPM]", top_xaxis=False, values="puls"):
     vmin, vmax = vmin - d, vmax + d
     for (run, uf), ax in zip(tf.groupby("run"), axs):
         vf = uf.pivot_table(columns="prob_id", values=values, index="time")
-        ax.plot(vf, color="black", linewidth=1, alpha=0.1)
+        ax.plot(vf, color="black", linewidth=1.5, alpha=0.15)
         ax.plot(vf.mean(axis=1), color="black", linewidth=2)
         ax.set_ylabel(ylabel)
         ax.set_ylim(vmin, vmax)
+        ax.set_xlim(tf["time"].min(), tf["time"].max())
     plt.xlabel("time [sec]")
 
 
@@ -37,7 +38,12 @@ if __name__ == "__main__":
         default=path.join(path.dirname(__file__), "puls", "puls_long.tsv"),
     )
     p.add_argument("-B", "--no-baseline", action="store_true")
-    p.add_argument("-t", "--top-xaxis", action="store_true", help="Plotte die mittlere x-Achse oben")
+    p.add_argument(
+        "-t",
+        "--top-xaxis",
+        action="store_true",
+        help="Plotte die mittlere x-Achse oben",
+    )
     p.add_argument(
         "-v", "--values", default="puls", help="Spalte, die die Werte enthält"
     )
@@ -56,8 +62,8 @@ if __name__ == "__main__":
 
     if not args.no_baseline:
         df = baseline_correction(df, column=args.values)
-    tf = df[["time", "puls", "prob_id", "run"]].copy()
-    plot_runs(tf, top_xaxis=args.top_xaxis)
+    tf = df[["time", args.values, "prob_id", "run"]].copy()
+    plot_runs(tf, top_xaxis=args.top_xaxis, values=args.values, ylabel=args.yaxis)
     if args.out:
         plt.savefig(args.out)
     else:
