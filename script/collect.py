@@ -93,5 +93,6 @@ def baseline_correction(df, column):
     for i in probanden:
         mask = df["prob_id"] == i
         df.loc[mask, column] -= df.loc[mask, column].mean()
-    df = df.astype({"age": int})
+    if "age" in df.columns:
+        df = df.astype({"age": int})
     return df
