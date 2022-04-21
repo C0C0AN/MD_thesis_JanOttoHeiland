@@ -28,14 +28,15 @@ def plot_runs(tf, ylabel="Puls [BPM]", top_xaxis=False, values="puls"):
     vmin, vmax = vmin - d, vmax + d
     for (run, uf), ax in zip(tf.groupby("run"), axs):
         vf = uf.pivot_table(columns="prob_id", values=values, index="time")
-        ax.plot(vf, color="black", linewidth=1.5, alpha=0.15)
+        ax.plot(vf, color="orange", linewidth=1.5, alpha=0.2)
         ax.plot(vf.mean(axis=1), color="black", linewidth=2)
         ax.set_ylabel(ylabel)
         ax.set_ylim(vmin, vmax)
         ax.set_xlim(tf["time"].min(), tf["time"].max())
         plot_phases(ax=ax, colors=["green", "green"])
     plt.xlabel("time [sec]")
-
+    axs[0].legend(["run1"], loc= 'upper right')
+    axs[1].legend(["run2"], loc= 'upper right')
 
 if __name__ == "__main__":
     import argparse
