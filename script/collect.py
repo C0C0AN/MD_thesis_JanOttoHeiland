@@ -51,7 +51,7 @@ def combine(df):
     intervals = run_intervals()
     for run in [1, 2]:
         for p in probanden:
-            mask = (df.run == run) & (df.prob_id == p)
+            rows = (df.run == run) & (df.prob_id == p)
             df.loc[mask, "time"] -= df.loc[mask, "time"].min()
             phase = pd.cut(df.loc[mask, "time"], intervals, labels=False)
             df.loc[mask, "phase"] = phase.cat.codes.astype(int)
@@ -89,10 +89,12 @@ def combine(df):
 
 def baseline_correction(df, column):
     """Ziehe in Spalte `column` pro Proband den Mittelwert ab."""
-    probanden = df["prob_id"].unique()
-    for i in probanden:
-        mask = df["prob_id"] == i
-        df.loc[mask, column] -= df.loc[mask, column].mean()
+    prob_col = "prob_id" if "prob_id" in df.columns else "prob_nr"
+    probanden = df[prob_col].unique()
+    for p in probanden:
+        for r in df["run"].unique():
+            rows = (df[prob_col] == p) & (df["run"] == r)
+            df.loc[rows, column] -= df.loc[rows, column].mean()
     if "age" in df.columns:
         df = df.astype({"age": int})
     return df
