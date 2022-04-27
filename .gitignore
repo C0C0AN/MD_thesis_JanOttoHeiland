@@ -10,3 +10,9 @@ Zeiten der Blöcke .odt
 *.pdf
 
 script/puls/output1.xlsx
+
+script/puls_base_run.tsv
+
+script/eda_base_run.tsv
+
+script/resp_base_run.tsv
