@@ -69,7 +69,9 @@ def fix_onset(nr=3, exp=0):
             a = a / 10
         df.onset[i] = "{:08.4f}".format(a)
         b = a
-    df.to_csv(out_tsv(nr, exp), sep="\t", index=False)
+    out_fname = out_tsv(nr, exp)
+    print(f"writing {out_fname}")
+    df.to_csv(out_fname, sep="\t", index=False)
 
 
 if __name__ == "__main__":
