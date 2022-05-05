@@ -18,6 +18,7 @@ def get_tsv(nr=3, exp=0):
         )
     )
     if not path.exists(file_name):
+        print(f"warning: could not find {file_name=}")
         return None
     return file_name
 
@@ -27,7 +28,6 @@ def out_tsv(nr=3, exp=0):
     dir = "{prefix}/HOAF/tsv".format(prefix=PREFIX)
     if not path.exists(dir):
         from os import makedirs
-
         makedirs(dir, mode=771)
     prob = "sub-{nr:02d}".format(nr=nr)
     file_name = "{dir}/{prob}_{exp}_events.tsv".format(
