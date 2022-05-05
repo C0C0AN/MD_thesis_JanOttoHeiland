@@ -33,7 +33,7 @@ def out_tsv(nr=3, exp=0):
     file_name = "{dir}/{prob}_{exp}_events.tsv".format(
         dir=dir, prob=prob, exp=EXPERIMENT_TYPE[exp]
     )
-    return file_name if path.exists(file_name) else None
+    return file_name
 
 
 def onset_sorted(nr, exp):
