@@ -14,7 +14,41 @@ df = pd.pivot(block2, index="prob_id", columns=["time"], values="eda")
 df_complete = df
 
 (df.T - df.mean(axis=1)).plot()
-df = df.loc[df.index[:5]]
+df = df.loc[df.index[:29]]
 plt.figure()
 ((df.T - df.mean(axis=1)) / df.std(axis=1)).plot()
+plt.show()
+
+# Definiere Phasen der Stressblöcke
+phases = [
+    (6.53, 64.87),
+    (94.43, 153.55),
+    (182.38, 242),
+    (270.34, 329.78),
+    (358.33, 416.69),
+    (446.23, 505.03),
+    (534.17, 593.74),
+    (622.14, 681.77),
+]
+
+
+def plot_phases(colors=["0.3", "0.9"], alpha=0.06):
+    """Stress und Entspannungsphasen des Experiments."""
+    for i, phase in enumerate(phases):
+        plt.axvspan(phase[0], phase[1], facecolor=colors[i % 2], alpha=alpha)
+
+
+df1 = df.T - df.mean(axis=1)
+plot_phases(colors=["green", "green"], alpha=0.05)
+ax = (df.T - df.mean(axis=1)).plot(legend=False, alpha=0.1, ax=plt.gca(), color="blue")
+df1.mean(axis=1).plot(
+    title="EDA run-1",
+    legend=True,
+    label="mean eda",
+    linewidth=2,
+    color="blue",
+    ax=ax,
+    xlabel="time(s)",
+    ylabel="eda(S)",
+)
 plt.show()

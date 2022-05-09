@@ -18,6 +18,7 @@ def get_tsv(nr=3, exp=0):
         )
     )
     if not path.exists(file_name):
+        print(f"warning: could not find {file_name=}")
         return None
     return file_name
 
@@ -27,13 +28,12 @@ def out_tsv(nr=3, exp=0):
     dir = "{prefix}/HOAF/tsv".format(prefix=PREFIX)
     if not path.exists(dir):
         from os import makedirs
-
         makedirs(dir, mode=771)
     prob = "sub-{nr:02d}".format(nr=nr)
     file_name = "{dir}/{prob}_{exp}_events.tsv".format(
         dir=dir, prob=prob, exp=EXPERIMENT_TYPE[exp]
     )
-    return file_name if path.exists(file_name) else None
+    return file_name
 
 
 def onset_sorted(nr, exp):
@@ -69,7 +69,9 @@ def fix_onset(nr=3, exp=0):
             a = a / 10
         df.onset[i] = "{:08.4f}".format(a)
         b = a
-    df.to_csv(out_tsv(nr, exp), sep="\t", index=False)
+    out_fname = out_tsv(nr, exp)
+    print(f"writing {out_fname}")
+    df.to_csv(out_fname, sep="\t", index=False)
 
 
 if __name__ == "__main__":

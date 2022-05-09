@@ -53,8 +53,7 @@ def compute_reduced_eda(size, filenames, backup="reduced_eda"):
     den Prozess zu beschleunigen (pickle ist das python modul dafür)
     """
     ls = []
-    # backup = f"{backup}_{size}.pickle"
-    backup = "{backup}_{size}.pickle"
+    backup = f"{backup}_{size}.pickle"
     if path.exists(backup):
         with open(backup, "rb") as io:
             return pickle.load(io)

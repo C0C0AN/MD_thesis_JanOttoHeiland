@@ -1,15 +1,7 @@
 """Analysiere die Start- und Endzeitpunkte der Phasen."""
 import pandas as pd
 
-
-def load_phasen(file_name="phasen.tsv", means=True):
-    pf = pd.read_csv(file_name, sep="\t")
-    pf = pf.set_index(list(pf.columns[:5]))
-    pf = pf.sort_values(["prob_nr", "run", "start"])
-    if means:
-        return pf.groupby(level=[1, 2, 3, 4], sort=False).mean()
-    return pf
-
+from collect import load_phasen
 
 if __name__ == "__main__":
     runs = load_phasen("phasen.tsv", means=True)
